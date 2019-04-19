@@ -1,2 +1,2 @@
-# janky-birds
+# Capture the Block
 Bonding curves and floppy blocks.
