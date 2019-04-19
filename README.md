@@ -26,7 +26,8 @@ Bonding curves and floppy blocks.
 
 # Extended features
 
-1. Randomness 
+1. Randomness
+2. Incentivizing creation of games: 1 Dai to create, 5% of winnings allocated to creator
 
 # Events
 
