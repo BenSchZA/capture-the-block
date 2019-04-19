@@ -1,0 +1,14 @@
+{
+  "name": "capture-the-block-webapp",
+  "version": "1.0.0",
+  "description": "capture the block webapp",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "",
+  "license": "MIT"
+}

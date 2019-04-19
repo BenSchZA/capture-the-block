@@ -1,0 +1,22 @@
+{
+  "name": "capture-the-block",
+  "version": "1.0.0",
+  "description": "Bonding curve tug-of-war",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BenSchZA/capture-the-block.git"
+  },
+  "keywords": [
+    "bondingcurve"
+  ],
+  "author": "Ryan Noble, Ben Scholtz, Michael Yankelev, Michael Jordaan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BenSchZA/capture-the-block/issues"
+  },
+  "homepage": "https://github.com/BenSchZA/capture-the-block#readme"
+}
