@@ -1,6 +1,7 @@
 pragma solidity 0.5.6;
 
 import { IERC20 } from "./_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
+import { SafeMath } from "./_resources/openzeppelin-solidity/math/SafeMath.sol";
 
 contract CaptureTheBlock {
     using SafeMath for uint256;
@@ -24,24 +25,28 @@ contract CaptureTheBlock {
         bool ended;
     }
 
-    event MatchStarted(uint8 indexed index, uint256 targetSupply);
+    event MatchStarted(uint256 indexed index, uint256 targetSupply);
 
-    event MatchEnded(uint8 indexed index, uint8 indexed winner);
+    event MatchEnded(uint256 indexed index, uint8 indexed winner);
 
-    event TokenPuchased(uint8 indexed index, address indexed player, uint256 daiValue);
+    event TokenPuchased(uint256 indexed index, address indexed player, uint256 daiValue);
 
-    event TokenSold(uint8 indexed index, address indexed player, uint256 daiValue);
+    event TokenSold(uint256 indexed index, address indexed player, uint256 daiValue);
 
-    event WinningsClaimed(uint8 indexed index, address indexed player, uint256 tokens, uint256 prize);
+    event WinningsClaimed(uint256 indexed index, address indexed player, uint256 tokens, uint256 prize);
    
     constructor(address _collateralAddress) public {
         matchIndex_ = 0;
         collateralAddress_ = _collateralAddress;
     }
 
-    function createMatch(uint256 _sides, uint256 _targetSupply, uint256 _gradientDemoninator) public view {
+    function createMatch(uint8 _numberOfSides, uint256 _targetSupply, uint256 _gradientDemoninator) public returns(bool) {
         require(matches[matchIndex_].ended, "Match still active");
         matchIndex_ = matchIndex_ + 1;
+        matches[matchIndex_].gradientDemoninator = _gradientDemoninator;
+        matches[matchIndex_].numberOfSides = _numberOfSides;
+        emit MatchStarted(matchIndex_, _targetSupply);
+        return true;
     }
 
     function purchaseToken(uint256 _index, uint8 _side) public returns(bool){
@@ -99,7 +104,7 @@ contract CaptureTheBlock {
 
     // Meta 
     //  numberOfSlides,targetSupply, prize, gradientDominator, ended
-    function getMatch(uint256 _index, uint8 _side) public view returns(uint8, uint256, uint256, uint256, bool) { 
+    function getMatch(uint256 _index) public view returns(uint8, uint256, uint256, uint256, bool) { 
         return (matches[_index].numberOfSides, matches[_index].targetSupply, matches[_index].prize, matches[_index].gradientDemoninator, matches[_index].ended);
     }
 
@@ -121,9 +126,9 @@ contract CaptureTheBlock {
 
     // Math functions
 
-    function curveIntegral(uint256 _x, uint256 _gradientDenominator) internal view returns (uint256) {
+    function curveIntegral(uint256 _x, uint256 _gradientDenominator) internal pure returns (uint256) {
         uint256 c = 0;
-        return ((_x**2).div(2*gradientDenominator_).add(c.mul(_x)).div(10**decimals_));
+        return ((_x**2).div(2*_gradientDenominator).add(c.mul(_x)).div(10**18));
     }
     
 }
