@@ -3,7 +3,7 @@ pragma solidity 0.5.6;
 import { IERC20 } from "./_resources/openzeppelin-solidity/token/ERC20/IERC20.sol";
 import { SafeMath } from "./_resources/openzeppelin-solidity/math/SafeMath.sol";
 
-contract CaptureTheBlock {
+contract CaptureTheBlockV1 {
     using SafeMath for uint256;
     address private collateralAddress_;
     mapping(uint256 => Match) private matches;
