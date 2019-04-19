@@ -32,3 +32,7 @@ Bonding curves and floppy blocks.
 
 1. Transactions - player username, buy/sell value 
 2. Game ticker - summary
+
+# End of Game
+
+Total pot distrubuted based on winning teams distribution of tokens.
