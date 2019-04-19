@@ -1,6 +1,12 @@
 # Capture the Block
 Bonding curves and floppy blocks.
 
+# MVP
+
+1. Single game at a time
+2. No limit on number of players per side
+3. Players randomly allocated
+
 # Variables
 
 1. Tokens - e.g. step size of 5 tokens
