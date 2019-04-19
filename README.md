@@ -8,6 +8,12 @@ Bonding curves and floppy blocks.
 3. Players randomly allocated
 4. Set step size
 
+# Dynamics
+
+1. Pump & dump
+2. Ramping
+3. Sybil attacks
+
 # Variables
 
 1. Tokens - e.g. step size of 5 tokens
