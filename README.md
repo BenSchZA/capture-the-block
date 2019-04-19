@@ -6,6 +6,7 @@ Bonding curves and floppy blocks.
 1. Single game at a time
 2. No limit on number of players per side
 3. Players randomly allocated
+4. Set step size
 
 # Variables
 
