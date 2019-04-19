@@ -38,6 +38,7 @@ contract CaptureTheBlockV1 {
     constructor(address _collateralAddress) public {
         matchIndex_ = 0;
         collateralAddress_ = _collateralAddress;
+        matches[matchIndex_].ended = true;
     }
 
     function createMatch(uint8 _numberOfSides, uint256 _targetSupply, uint256 _gradientDemoninator) public returns(bool) {
