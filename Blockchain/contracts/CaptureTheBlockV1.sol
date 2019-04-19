@@ -103,7 +103,7 @@ contract CaptureTheBlock {
     }
 
     // Meta 
-    //  numberOfSlides,targetSupply, prize, gradientDominator, ended
+    //  numberOfSides,targetSupply, prize, gradientDominator, ended
     function getMatch(uint256 _index) public view returns(uint8, uint256, uint256, uint256, bool) { 
         return (matches[_index].numberOfSides, matches[_index].targetSupply, matches[_index].prize, matches[_index].gradientDemoninator, matches[_index].ended);
     }
