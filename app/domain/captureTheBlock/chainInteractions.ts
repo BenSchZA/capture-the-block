@@ -1,4 +1,3 @@
-import { abi as DaiContractAbi} from "../../../../Blockchain/build/PseudoDaiToken.json";
 import { abi as CaptureTheBlockAbi} from "../../../../Blockchain/build/CaptureTheBlockV1.json";
 
 import { ethers } from "ethers";
@@ -7,8 +6,6 @@ import { ethers } from "ethers";
 // Ethers standard event filter type is missing the blocktags
 import { BlockTag } from 'ethers/providers/abstract-provider';
 import { blockchainResources, getBlockchainObjects } from "blockchainResources";
-import { BigNumber } from "ethers/utils";
-
 
 export declare type EventFilter = {
 	address?: string;
