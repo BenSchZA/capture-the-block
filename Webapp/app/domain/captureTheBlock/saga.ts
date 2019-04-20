@@ -20,7 +20,7 @@ import { ethers } from 'ethers';
 import { setTxContextAction } from 'domain/transactionManagement/actions';
 
 export function* fetchMatch(index: number){
-  if (index === 0) {console.log('bleh'); return;};
+  if (index === 0) {return;};
   let newMatch: Match = {
     ended: false,
     numberOfSides: 2,
@@ -51,7 +51,7 @@ export function* fetchMatch(index: number){
     balance: yield call(getBalanceOf, index, 1),
     totalSupply: yield call(getTotalSupply, index, 1),
   }]
-  console.log(newMatch);
+
   yield put(setMatchAction(newMatch))
 }
 
@@ -60,8 +60,6 @@ export function* fetchMatches(currentMatch: number){
     yield fork(fetchMatch, i);
   }
 }
-
-
 
 // Listeners
 export function* fetchMatchListener() {

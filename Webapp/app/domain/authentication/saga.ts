@@ -1,5 +1,5 @@
 import { eventChannel } from 'redux-saga';
-import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/effects';
+import { call, cancel, delay, fork, put, race, select, take, spawn } from 'redux-saga/effects';
 import { ApplicationRootState } from 'types';
 import { forwardTo } from 'utils/history';
 import * as authenticationActions from './actions';
@@ -9,8 +9,9 @@ import { refreshBalancesAction, setTxContextAction } from 'domain/transactionMan
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
 import { balanceOfTx, getApproval, mintTx, approveTx } from './chainInteractions';
 
-export function* checkDaiRequirements(ethAddres: string){
-  try{
+export function* checkDaiRequirements(){
+  try {
+    console.log(yield call(getApproval));
     const allowance = yield call(getApproval);
     if(allowance == 0){
       const balance = yield call(balanceOfTx);
@@ -32,7 +33,7 @@ export function* connectWallet() {
   if (provider) {
     try {
       yield put(authenticationActions.setEthAddress({ethAddress : signerAddress}));
-      yield fork(checkDaiRequirements, signerAddress);
+      yield spawn(checkDaiRequirements);
       yield put(fetchAllAction());
       yield put(authenticationActions.connectWallet.success());
     } catch (error) {

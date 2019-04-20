@@ -69,13 +69,14 @@ export async function balanceOfTx(){
 export async function getApproval(){
 	try{
 		const {provider, signer, signerAddress} = await getBlockchainObjects();
-    const daiContract = (await new ethers.Contract(`${blockchainResources.daiAddress}`, JSON.stringify(DaiContractAbi), provider)).connect(signer);
-
+    	const daiContract = (await new ethers.Contract(`${blockchainResources.daiAddress}`, JSON.stringify(DaiContractAbi), provider)).connect(signer);
 		const approvalBn = await daiContract.allowance(signerAddress, `${blockchainResources.captureTheBlockContractAddress}`);
 
 		return parseFloat(ethers.utils.formatUnits(approvalBn, 18));
 	}
 	catch(e){
+		debugger;
+		console.log(e);
 		throw e;
 	}
 }
