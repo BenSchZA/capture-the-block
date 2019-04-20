@@ -9,6 +9,7 @@
     "test": "etherlime compile --runs=999 && etherlime test --skip-compilation=true",
     "debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000",
     "test:debug": "yarn debug test",
+    "deploy": "etherlime deploy --runs=999",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=999"
   },
   "author": "Ryan N, Ben S, Michael Y, Michael J",
@@ -21,6 +22,6 @@
     "ethers": "^4.0.23",
     "mathjs": "^5.4.1",
     "openzeppelin-solidity": "^2.0.0",
-    "solc": "0.5.3"
+    "solc": "0.5.6"
   }
 }
