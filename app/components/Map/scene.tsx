@@ -3,7 +3,6 @@ import Phaser from 'phaser';
 export default class Scene extends Phaser.Scene {
 
   game;
-  player;
   cursors;
   scene;
 
@@ -12,7 +11,14 @@ export default class Scene extends Phaser.Scene {
   end_x = 850;
   end_y = 255;
 
-  getPosition(progress) {
+  start_x2 = 1335;
+  start_y2 = 680;
+  end_x2 = 890;
+  end_y2 = 255;
+
+  currentBlock = 0;
+
+  getPositionLeft(progress) {
     const x_len = this.end_x - this.start_x;
     const y_len = this.end_y - this.start_y;
 
@@ -22,16 +28,78 @@ export default class Scene extends Phaser.Scene {
     return {x: x_prog, y: y_prog};
   }
 
+  getPositionRight(progress) {
+    const x_len = this.start_x2 - this.end_x2;
+    const y_len = this.end_y2 - this.start_y2;
+
+    const x_prog = this.start_x2 - x_len*progress;
+    const y_prog = this.start_y2 + y_len*progress;
+
+    return {x: x_prog, y: y_prog};
+  }
+
+  createPlayerLeft() {
+    const player = this.impact.add.image(this.start_x, this.start_y, 'player');
+    player.setMaxVelocity(300, 400).setFriction(800, 0);
+    player.body.accelGround = 1200;
+    player.body.accelAir = 600;
+    player.body.jumpSpeed = 300;
+    return player;
+  }
+
+  createPlayerRight() {
+    const player = this.impact.add.image(this.start_x2, this.start_y2, 'player');
+    player.setMaxVelocity(300, 400).setFriction(800, 0);
+    player.body.accelGround = 1200;
+    player.body.accelAir = 600;
+    player.body.jumpSpeed = 300;
+    return player;
+  }
+
+  movePlayerLeft(player, progress) {
+    const coords = this.getPositionLeft(progress);
+
+    player.x = coords.x;
+    player.y = coords.y;
+  }
+
+  movePlayerRight(player, progress) {
+    const coords = this.getPositionRight(progress);
+
+    player.x = coords.x;
+    player.y = coords.y;
+  }
+
+  simulateBlockTime(player) {
+    console.log(`New block`);
+    const coords = this.getPositionLeft(0.1*this.currentBlock);
+
+    player.x = coords.x;
+    player.y = coords.y;
+
+    this.currentBlock++;
+    console.log(coords);
+  }
+
   preload() {
     this.load.tilemapTiledJSON('map', 'impact-tilemap.json');
     this.load.image('kenney', 'kenney.png');
     this.load.image('player', 'phaser-dude.png');
   }
 
+  player1;
+  player2;
+  player3;
+  player4;
+
   create() {
+    console.log(this);
+
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('kenney');
     const layer = map.createStaticLayer(0, tileset, 0, 0);
+
+    // this.repeat(delay, repeatCount, callback, callbackContext, arguments)
  
     // Any tile with the collides property set to true (in Tiled) will be set to collide
     layer.setCollisionByProperty({ collides: true });
@@ -47,8 +115,9 @@ export default class Scene extends Phaser.Scene {
     // Method 1. If we assign the slope IDs as tile properties in Tiled's tileset editor, we can
     // load them by passing in the property name, e.g. impact-tilemap.json has a property on every
     // tile called "slope":
+    // @ts-ignore
     this.impact.world.setCollisionMapFromTilemapLayer(layer, { slopeProperty: 'slope' });
- 
+
     // Method 2. If we don't have slopes defined in Tiled, we can manually map tile index to slope
     // ID using an object:
     // var slopeMap = { 32: 1, 77: 1, 82: 1, 95: 24, 137: 2, 140: 24, 36: 2 };
@@ -57,49 +126,40 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    this.player = this.impact.add.image(350, 300, 'player');
-    this.player.setMaxVelocity(300, 400).setFriction(800, 0);
-    this.player.body.accelGround = 1200;
-    this.player.body.accelAir = 600;
-    this.player.body.jumpSpeed = 300;
+    this.player1 = this.createPlayerLeft();
+    this.player2 = this.createPlayerLeft();
+    this.player3 = this.createPlayerRight();
+    this.player4 = this.createPlayerRight();
  
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    this.cameras.main.startFollow(this.player);
+    this.cameras.main.startFollow(this.player1);
  
     this.cursors = this.input.keyboard.createCursorKeys();
  
-    const help = this.add.text(16, 16, 'Arrow keys to move. Press "up" to jump.', {
+    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move.', {
         fontSize: '18px',
         fill: '#ffffff'
     });
     help.setScrollFactor(0);
+
+    // this.impact.world.
+
+    // this.physics.moveTo(this.player, this.end_x, this.end_y);
   }
 
+  lastUpdateTime = 0;
+
   update(time, delta) {
-    const accel = this.player.body.standing ? this.player.body.accelGround : this.player.body.accelAir;
-
-    if (this.cursors.left.isDown)
-    {
-      this.player.setAccelerationX(-accel);
+    console.log(time - this.lastUpdateTime);
+    if(time - this.lastUpdateTime > 5000) {
+      this.movePlayerLeft(this.player1, 0.1*this.currentBlock);
+      this.currentBlock++;
+      this.lastUpdateTime = time;
     }
-    else if (this.cursors.right.isDown)
-    {
-      this.player.setAccelerationX(accel);
-    }
-    else
-    {
-      this.player.setAccelerationX(0);
-    }
-
-    if (this.cursors.up.isDown && this.player.body.standing)
-    {
-      this.player.setVelocityY(-this.player.body.jumpSpeed);
-    }
-
-    const coords = this.getPosition(1.0);
-
-    this.player.x = coords.x;
-    this.player.y = coords.y;
+    this.movePlayerLeft(this.player2, 0.5);
+    this.movePlayerRight(this.player3, 0.3);
+    this.movePlayerRight(this.player4, 1);
+    // this.simulateBlockTime();
   }
 }
 

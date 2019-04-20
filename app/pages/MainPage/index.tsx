@@ -2,6 +2,7 @@ import { Theme, WithStyles, Grid } from '@material-ui/core';
 import { createStyles, withStyles } from '@material-ui/core/styles';
 import React, { Fragment } from 'react';
 import { compose } from 'redux';
+import Map from '../../components/Map';
 
 const styles = ({ spacing, breakpoints }: Theme) => createStyles({
 
@@ -19,7 +20,9 @@ const MainPage: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
       <Grid container>
         <Grid item xs={8}>
           <Grid container>
-            <Grid item xs={12}>Graph goes here</Grid>
+            <Grid item xs={12}>
+              <Map />
+            </Grid>
             <Grid item xs={6}>Red controls go here</Grid>
             <Grid item xs={6}>Blue controls go here</Grid>
           </Grid>
