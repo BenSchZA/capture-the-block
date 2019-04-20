@@ -24,10 +24,10 @@ const BuySellControl: React.SFC<OwnProps> = ({ side, onBuyClick, onSellClick }: 
       <Typography>Side {side}</Typography>
     </Grid>
     <Grid item xs={6}>
-      <Button variant={'raised'} onClick={() => onBuyClick(side)}>Buy</Button>
+      <Button variant='contained' onClick={() => onBuyClick(side)}>Buy</Button>
     </Grid>
     <Grid item xs={6}>
-      <Button variant={'raised'} onClick={() => onSellClick(side)}>Sell</Button>
+      <Button variant='contained' onClick={() => onSellClick(side)}>Sell</Button>
     </Grid>
   </Grid>;
 };
