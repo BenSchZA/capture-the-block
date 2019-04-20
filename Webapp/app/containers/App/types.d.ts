@@ -4,12 +4,7 @@ import { ApplicationRootState } from 'types';
 
 /* --- STATE --- */
 interface AppState {
-  ethAddress: string,
-  txPending: boolean;
-  txRemaining: number;
-  txContext: string;
-  networkReady: boolean;
-  networkId: number;
+
 }
 
 

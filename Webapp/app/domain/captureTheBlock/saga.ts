@@ -17,6 +17,7 @@ import {
 import { Match } from './types';
 import { setMatchAction, claimWinningsAction } from './actions';
 import { ethers } from 'ethers';
+import { setTxContextAction } from 'domain/transactionManagement/actions';
 
 export function* fetchMatch(index: number){
   if (index === 0) return;
@@ -87,6 +88,7 @@ export function* startMatchListener(){
   while(true){
     const {numberOfSides, targetSupply, gradient} = (yield take(captureTheBlockActions.startMatchAction.request)).payload;
     try{
+      yield put(setTxContextAction(`Starting match`));
       const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.startMatchAction.success())
@@ -101,6 +103,7 @@ export function* buyTokenListener(){
   while(true){
     const side = (yield take(captureTheBlockActions.buyTokenAction.request)).payload
     try{
+      yield put(setTxContextAction(`Buying token`));
       const index = yield call(buyTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.buyTokenAction.success())
@@ -115,6 +118,7 @@ export function* sellTokenListener(){
   while(true){
     const side = (yield take(captureTheBlockActions.sellTokenAction.request)).payload
     try{
+      yield put(setTxContextAction(`Selling token`));
       const index = yield call(sellTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.sellTokenAction.success())
@@ -129,6 +133,7 @@ export function* ClaimWinningsListener(){
   while(true){
     const index = (yield take(captureTheBlockActions.claimWinningsAction.request)).payload
     try{
+      yield put(setTxContextAction(`Claiming winnings`));
       yield call(claimWinningsTx, index);
 
       yield fork(fetchMatch, index);

@@ -99,7 +99,7 @@ export async function priceToBuy(index: number, side: number){
 export async function rewardForSell(index: number, side: number){
 	try {
 		const {provider, signer} = await getBlockchainObjects();
-    const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
+    	const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
 		const daiPriceBN = await captureTheBlockContract.rewardForSell(index, side);
 
 		return parseFloat(ethers.utils.formatUnits(daiPriceBN, 18));
@@ -166,7 +166,6 @@ export async function matchIndex(){
 		const {provider, signer} = await getBlockchainObjects();
 		const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
 		const matchIndexBN = await captureTheBlockContract.matchIndex();
-		console.log(parseInt(ethers.utils.formatUnits(matchIndexBN, 0)));
 		return parseInt(ethers.utils.formatUnits(matchIndexBN, 0));
 	}
 	catch(e){

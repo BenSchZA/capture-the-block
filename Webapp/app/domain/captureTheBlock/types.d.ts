@@ -23,7 +23,6 @@ export interface Match {
 
 /* --- STATE --- */
 interface CaptureTheBlockState {
-  // gameStats: [key:number]: Game[]
   currentIndex: number;
   match: Match;
 }

@@ -103,6 +103,9 @@ contract CaptureTheBlockV1 {
     }
 
     function rewardForSell(uint256 _index, uint8 _side) public view returns(uint256) {
+        if(matches[_index].side[_side].totalSupply == 0){
+            return 0;
+        }
         return matches[_index].side[_side].poolBalance.sub(curveIntegral(matches[_index].side[_side].totalSupply.sub(1).mul(10 ** 18), matches[_index].gradient));
     }
 
