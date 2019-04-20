@@ -4,12 +4,10 @@ import * as authenticationActions from './actions';
 import { DomainActions, DomainState } from './types';
 
 export const initialState: DomainState = {
-  walletUnlocked: false,
-  errorMessage: '',
-  ethAddress: '',
+  currentIndex: 0,
 };
 
-function authenticationReducer(state: DomainState = initialState, action: DomainActions) {
+function captureTheBlockReducer(state: DomainState = initialState, action: DomainActions) {
   switch (action.type) {
     case getType(authenticationActions.startMatchAction.success):
       return {
@@ -27,14 +25,6 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
       return {
         ...state,
       };
-    case getType(authenticationActions.priceToBuyAction):
-      return {
-        ...state,
-      };
-    case getType(authenticationActions.priceToSellAction):
-      return {
-        ...state,
-      }
     case getType(authenticationActions.getMatchAction):
       return {
         ...state,
@@ -54,10 +44,18 @@ function authenticationReducer(state: DomainState = initialState, action: Domain
     case getType(authenticationActions.collateralAddressAction):
       return {
         ...state,
+
+      }
+    case getType(authenticationActions.setMatchAction):
+      return {
+        ...state,
+        [action.payload.index]: {
+          ...action.payload
+        }
       }
     default:
       return state;
   }
 }
 
-export default authenticationReducer;
+export default captureTheBlockReducer;

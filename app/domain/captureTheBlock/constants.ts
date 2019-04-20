@@ -24,6 +24,9 @@ enum ActionTypes {
   GET_BALANCE = 'capture-the-block/CaptureTheBlock/GET_BALANCE',
   MATCH_INDEX = 'capture-the-block/CaptureTheBlock/MATCH_INDEX',
   COLLATERAL_ADDRESS = 'capture-the-block/CaptureTheBlock/COLLATERAL_ADDRESS',
+  FETCH_MATCH = 'capture-the-block/CaptureTheBlock/FETCH_MATCHES',
+  SET_MATCH = 'capture-the-block/CaptureTheBlock/SET_MATCH',
+  FETCH_ALL = 'capture-the-block/CaptureTheBlock/FETCH_ALL',
 }
 
 export default ActionTypes;
