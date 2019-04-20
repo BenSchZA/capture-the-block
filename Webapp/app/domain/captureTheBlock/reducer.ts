@@ -21,7 +21,7 @@ function captureTheBlockReducer(state: DomainState = initialState, action: Domai
       return {
         ...state,
       };
-    case getType(authenticationActions.claimWinnings.success):
+    case getType(authenticationActions.claimWinningsAction.success):
       return {
         ...state,
       };
