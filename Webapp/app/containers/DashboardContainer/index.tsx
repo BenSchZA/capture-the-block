@@ -14,6 +14,7 @@ import reducer from './reducer';
 import saga from './saga';
 import selectDashboardContainer from './selectors';
 import Dashboard from 'components/Dashboard';
+import Map from 'components/Map';
 
 interface OwnProps {}
 
@@ -27,7 +28,12 @@ type Props = StateProps & DispatchProps & OwnProps;
 
 const DashboardContainer: React.SFC<Props> = (props: Props) => {
   const { } = props;
-  return <Dashboard />;
+  return (
+    <Fragment>
+      <Dashboard />
+      <Map />
+    </Fragment>
+  );
 };
 
 const mapStateToProps = selectDashboardContainer;
