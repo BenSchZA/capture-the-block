@@ -58,7 +58,7 @@ function captureTheBlockReducer(state: DomainState = initialState, action: Domai
     case getType(captureTheBlockActions.setMatchAction):
       return {
         ...state,
-        [action.payload.index]: {
+        match: {
           ...action.payload
         }
       }

@@ -15,51 +15,80 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Switch, withRouter } from 'react-router';
 import { Route } from 'react-router-dom';
-import { compose } from 'redux';
+import { compose, Dispatch } from 'redux';
 import injectSaga from 'utils/injectSaga';
 
 import { DAEMON } from 'utils/constants';
 
-import { forwardTo } from 'utils/history';
 import AppWrapper from '../../components/AppWrapper/index';
-import routes from './routes';
 import saga from './saga';
 import TxLoadingModal from 'components/TxLoadingModal';
-import selectApp from './selectors';
+
+import { Match } from 'domain/captureTheBlock/types';
+import MainPage from 'pages/MainPage';
+import { Button } from '@material-ui/core';
+import { ApplicationRootState } from 'types';
+import * as captureTheBlockActions from '../../domain/captureTheBlock/actions';
+import { blockchainResources } from 'blockchainResources';
 
 interface OwnProps { }
 
 interface StateProps {
-  ethAddress: string;
-  txPending: boolean;
-  txRemaining: number;
-  txContext: string;
-  networkReady: boolean;
-  networkId: number;
+  authentication: {
+    ethAddress: string,
+  },
+  captureTheBlock: {
+    match: Match,
+  },
+  transactionManagement: {
+    txPending: boolean,
+    txRemaining: number,
+    txContext: string,
+  }
 }
 
 interface DispatchProps {
+  startMatch(): void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
-const App: React.SFC<Props> = (props: Props) => {
-  const { networkReady, networkId, ethAddress, txPending, txRemaining, txContext } = props;
+const App: React.SFC<Props> = ({
+  captureTheBlock: {
+    match: {
+      ended
+    }
+  },
+  transactionManagement: {
+    txPending,
+    txRemaining,
+    txContext
+  },
+  startMatch }: Props) => {
   return (
     <AppWrapper
-      ethAddress={ethAddress}
-      networkId={networkId}
-      networkReady={networkReady} >
+      ethAddress={blockchainResources.signerAddress}
+      networkReady={true}
+      networkId={blockchainResources.networkId} >
       <TxLoadingModal pendingTx={txPending} txRemaining={txRemaining} txContext={txContext}></TxLoadingModal>
-      <Switch>
-        {routes.map(r => <Route path={r.path} exact component={r.component} key={r.path} />)}
-      </Switch>
+      {ended ?
+        <Button onClick={startMatch}>Start Match</Button> :
+        <Route path='/' exact component={MainPage} />
+      }
     </AppWrapper>
   );
 };
 
+const mapStateToProps = (state: ApplicationRootState) => ({
+  ...state,
+})
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  startMatch: () => dispatch(captureTheBlockActions.startMatchAction.request({ numberOfSides: 2, targetSupply: 15, gradient: 3 }))
+})
+
 const withConnect = connect(
-  null,
-  null,
+  mapStateToProps,
+  mapDispatchToProps,
 );
 
 const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });
