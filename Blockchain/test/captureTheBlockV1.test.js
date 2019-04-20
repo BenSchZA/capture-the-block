@@ -120,10 +120,74 @@ describe('Capture The Block V1', () => {
             assert.isOk(matchData[3].eq(matchSetting[0].gradient), "First match gradient not set up correctly");
 
         })
-        it('Purchases a token for side 1')
+
+        describe("Playing a match", () => {
+            beforeEach('Create a match', async () => {
+                let currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+                assert.isOk(currentMatchIndex.eq(0), "Match incorrect");
+    
+                let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
+                assert.isOk(matchData[4], "Initial match slot not set up correctly");
+    
+                await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+    
+                currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+                assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
+    
+                matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
+                assert.equal(matchData[0], matchSetting[0].numberOfSides, "First match sides not set up correctly");
+                assert.isOk(matchData[1].eq(matchSetting[0].targetSupply), "First match targetSupply not set up correctly");
+                assert.isOk(matchData[3].eq(matchSetting[0].gradient), "First match gradient not set up correctly");
+    
+            })
+            it('Prices the first token on gradient 3 at 1.5Dai', async () => {
+                let priceToBuySideA = await captureTheBlockInstance.from(player1).priceToBuy(1, 0);
+                assert.equal(ethers.utils.formatUnits(priceToBuySideA, 18), "1.5", "Price Incorrect")
+            })
+            it('Purchases the first token successfully', async () => {
+                let balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not initalized correctly")
+
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
+
+                matchData = await captureTheBlockInstance.from(player1).getMatch(1);
+                assert.equal(ethers.utils.formatUnits(matchData[2], 18), "1.5", "Prize not updated correctly")
+
+                const tokenBalanceOnSide = await captureTheBlockInstance.from(player1).getBalanceOf(1,0,player1.wallet.address);
+
+                assert.isOk(tokenBalanceOnSide.eq(1), "Token Balance incorrect")
+
+                const getSidesPoolBalance = await captureTheBlockInstance.from(player1).getMatchSidePoolBalance(1,0);
+                assert.equal(ethers.utils.formatUnits(getSidesPoolBalance, 18), "1.5", "Prize not updated correctly")
+            })
+            it('Prices the second token correctly', async () => {
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                let priceToBuySideA = await captureTheBlockInstance.from(player1).priceToBuy(1, 0);
+                assert.equal(ethers.utils.formatUnits(priceToBuySideA, 18), "4.5", "Price Incorrect")
+            })
+        })
+        
     })
 
     describe('Meta Checks', () => {
+        it('Returns the collateral contract address', async () => {
+            const collateralAddress = await captureTheBlockInstance.from(adminAccount).collateralAddress();
+            assert.equal(collateralAddress, pseudoDaiInstance.contractAddress, "Contract address incorrect");
+        });
 
+        it("Returns the current active match correctly", async () => {
+            let currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+            assert.isOk(currentMatchIndex.eq(0), "Match incorrect");
+
+            let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
+            assert.isOk(matchData[4], "Initial match slot not set up correctly");
+
+            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+
+            currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+            assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
+        })
     })
 })

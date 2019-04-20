@@ -53,13 +53,14 @@ contract CaptureTheBlockV1 {
 
     function purchaseToken(uint256 _index, uint8 _side) public returns(bool){
         require(!matches[_index].ended, "Match ended");
-        // Get DAI purchase price for 1 more token
-        // require(IERC20(collateralAddress_).transferFrom(msg.sender, address(this), daiValue), "Transfer failed");
-        // matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.add(daiValue);
-        // matches[_index].prize = matches[_index].prize.add(daiValue);
+        require(_side < matches[_index].numberOfSides, "Invalid Team");
+        uint256 daiValue = priceToBuy(_index, _side);
+        require(IERC20(collateralAddress_).transferFrom(msg.sender, address(this), daiValue), "Transfer failed");
+        matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.add(daiValue);
+        matches[_index].prize = matches[_index].prize.add(daiValue);
         matches[_index].side[_side].balances[msg.sender] = matches[_index].side[_side].balances[msg.sender] + 1;
         matches[_index].side[_side].totalSupply = matches[_index].side[_side].totalSupply + 1;
-        // emit TokenPuchased(_index, msg.sender, daiValue);
+        emit TokenPuchased(_index, msg.sender, daiValue);
 
         if(matches[_index].side[_side].totalSupply == matches[_index].targetSupply){
             // End match
@@ -72,14 +73,17 @@ contract CaptureTheBlockV1 {
 
     function sellToken(uint256 _index, uint8 _side) public returns(bool){
         require(!matches[_index].ended, "Match ended");
+        require(_side < matches[_index].numberOfSides, "Invalid Team");
         require(matches[_index].side[_side].balances[msg.sender] > 0, "User has no tokens remaining");
-        // Get DAI sale price for 1 more token
+        uint256 daiValue = rewardForSell(_index, _side);
+
         matches[_index].side[_side].balances[msg.sender] = matches[_index].side[_side].balances[msg.sender] - 1;
         matches[_index].side[_side].totalSupply = matches[_index].side[_side].totalSupply - 1;
-        // matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.sub(daiValue);
-        // matches[_index].prize = matches[_index].prize.sub(daiValue);
-        // require(IERC20(collateralAddress_).transfer(msg.sender, daiValue), "Transfer failed");
-        // emit TokenSold(_index, msg.sender, daiValue)
+        matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.sub(daiValue);
+
+        matches[_index].prize = matches[_index].prize.sub(daiValue);
+        require(IERC20(collateralAddress_).transfer(msg.sender, daiValue), "Transfer failed");
+        emit TokenSold(_index, msg.sender, daiValue);
         return true;
     }  
 
@@ -96,12 +100,12 @@ contract CaptureTheBlockV1 {
     }
 
     // Pricing 
-    function priceToMint(uint256 _index, uint8 _side) public view returns(uint256) {
-        return curveIntegral(matches[_index].side[_side].totalSupply.add(1), matches[_index].gradient).sub(matches[_index].side[_side].poolBalance);
+    function priceToBuy(uint256 _index, uint8 _side) public view returns(uint256) {
+        return curveIntegral(matches[_index].side[_side].totalSupply.add(1).mul(10 ** 18), matches[_index].gradient).sub(matches[_index].side[_side].poolBalance);
     }
 
-    function rewardForBurn(uint256 _index, uint8 _side) public view returns(uint256) {
-        return matches[_index].side[_side].poolBalance.sub(curveIntegral(matches[_index].side[_side].totalSupply.sub(1), matches[_index].gradient));
+    function rewardForSell(uint256 _index, uint8 _side) public view returns(uint256) {
+        return matches[_index].side[_side].poolBalance.sub(curveIntegral(matches[_index].side[_side].totalSupply.sub(1).mul(10 ** 18), matches[_index].gradient));
     }
 
     // Meta 
@@ -114,8 +118,8 @@ contract CaptureTheBlockV1 {
         return matches[_index].side[_side].poolBalance;
     }
 
-    function getBalance(uint256 _index, uint8 _side) public view returns(uint256){
-        return matches[_index].side[_side].balances[msg.sender];
+    function getBalanceOf(uint256 _index, uint8 _side, address _player) public view returns(uint256){
+        return matches[_index].side[_side].balances[_player];
     }
 
     function matchIndex() public view returns(uint256){
