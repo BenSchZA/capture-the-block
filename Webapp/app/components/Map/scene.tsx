@@ -5,9 +5,15 @@ enum Side {
   RIGHT
 }
 
-enum Player {
+enum PlayerType {
   ME,
   PARTICIPANT
+}
+
+interface Player {
+  side: Side,
+  type: PlayerType,
+  progress: Number,
 }
 
 export default class Scene extends Phaser.Scene {
@@ -15,6 +21,7 @@ export default class Scene extends Phaser.Scene {
   game;
   cursors;
   scene;
+  map;
 
   start_x = 420;
   start_y = 680;
@@ -51,12 +58,17 @@ export default class Scene extends Phaser.Scene {
   createPlayer(who, side) {
     let player;
 
-    let type = who === Player.ME ? Player.ME.toString() : Player.PARTICIPANT.toString()
+    let type = who === PlayerType.ME ? PlayerType.ME.toString() : PlayerType.PARTICIPANT.toString();
 
     if(side === Side.LEFT) {
-      player = this.impact.add.image(this.start_x, this.start_y, type);
+      player = this.createContext.physics.add.image(this.start_x, this.start_y, type);
     } else {
-      player = this.impact.add.image(this.start_x2, this.start_y2, type);
+      player = this.createContext.physics.add.image(this.start_x2, this.start_y2, type);
+    }
+
+    if(who === PlayerType.ME) {
+      this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+      this.createContext.cameras.main.startFollow(player);
     }
     
     player.setMaxVelocity(300, 400).setFriction(800, 0);
@@ -69,6 +81,7 @@ export default class Scene extends Phaser.Scene {
   movePlayerLeft(player, progress) {
     const coords = this.getPositionLeft(progress);
 
+    // this.physics.moveTo(player, coords.x, coords.y);
     player.x = coords.x;
     player.y = coords.y;
   }
@@ -76,39 +89,27 @@ export default class Scene extends Phaser.Scene {
   movePlayerRight(player, progress) {
     const coords = this.getPositionRight(progress);
 
+    // this.physics.moveTo(player, coords.x, coords.y);
     player.x = coords.x;
     player.y = coords.y;
-  }
-
-  simulateBlockTime(player) {
-    console.log(`New block`);
-    const coords = this.getPositionLeft(0.1*this.currentBlock);
-
-    player.x = coords.x;
-    player.y = coords.y;
-
-    this.currentBlock++;
-    console.log(coords);
   }
 
   preload() {
     this.load.tilemapTiledJSON('map', 'impact-tilemap.json');
     this.load.image('kenney', 'kenney.png');
-    this.load.image(Player.PARTICIPANT.toString(), 'phaser-dude.png');
-    this.load.image(Player.ME.toString(), 'rick.png');
+    this.load.image(PlayerType.PARTICIPANT.toString(), 'phaser-dude.png');
+    this.load.image(PlayerType.ME.toString(), 'sonic.png');
   }
 
-  player1;
-  player2;
-  player3;
-  player4;
+  newPlayer;
+  createContext;
 
   create() {
-    console.log(this);
+    this.createContext = this;
 
-    const map = this.make.tilemap({ key: 'map' });
-    const tileset = map.addTilesetImage('kenney');
-    const layer = map.createStaticLayer(0, tileset, 0, 0);
+    this.map = this.make.tilemap({ key: 'map' });
+    const tileset = this.map.addTilesetImage('kenney');
+    const layer = this.map.createStaticLayer(0, tileset, 0, 0);
 
     // this.repeat(delay, repeatCount, callback, callbackContext, arguments)
  
@@ -127,7 +128,7 @@ export default class Scene extends Phaser.Scene {
     // load them by passing in the property name, e.g. impact-tilemap.json has a property on every
     // tile called "slope":
     // @ts-ignore
-    this.impact.world.setCollisionMapFromTilemapLayer(layer, { slopeProperty: 'slope' });
+    // this.physics.world.setCollisionMapFromTilemapLayer(layer, { slopeProperty: 'slope' });
 
     // Method 2. If we don't have slopes defined in Tiled, we can manually map tile index to slope
     // ID using an object:
@@ -137,45 +138,31 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    this.player1 = this.createPlayer(Player.PARTICIPANT, Side.LEFT);
-    this.player2 = this.createPlayer(Player.ME, Side.LEFT);
-    this.player3 = this.createPlayer(Player.PARTICIPANT, Side.RIGHT);
-    this.player4 = this.createPlayer(Player.PARTICIPANT, Side.RIGHT);
- 
-    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
-    this.cameras.main.startFollow(this.player1);
- 
-    this.cursors = this.input.keyboard.createCursorKeys();
- 
     const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move.', {
         fontSize: '18px',
         fill: '#ffffff'
     });
     help.setScrollFactor(0);
-
-    // this.impact.world.
-
-    // this.physics.moveTo(this.player, this.end_x, this.end_y);
   }
 
   lastUpdateTime = 0;
 
+  players: Array<Player> = [];
+  setPlayers(players: Array<Player>) {
+    this.players = players;
+  }
+
   update(time, delta) {
-    console.log(time - this.lastUpdateTime);
-    if(time - this.lastUpdateTime > 5000) {
-      // this.movePlayerLeft(this.player1, 0.1);
-      // this.movePlayerLeft(this.player2, 0.5);
-      // this.movePlayerRight(this.player3, 0.3);
-      // this.movePlayerRight(this.player4, 1);
+    if(time - this.lastUpdateTime > 10000) {
+      this.players.forEach((player) => {
+        if(player.side === Side.LEFT) {
+          this.movePlayerLeft(this.createPlayer.bind(this.createContext)(player.type, player.side), player.progress);
+        } else {
+          this.movePlayerRight(this.createPlayer.bind(this.createContext)(player.type, player.side), player.progress);
+        }
+      });
       this.lastUpdateTime = time;
     }
-
-    this.movePlayerLeft(this.player1, 0.1);
-    this.movePlayerLeft(this.player2, 0.5);
-    this.movePlayerRight(this.player3, 0.3);
-    this.movePlayerRight(this.player4, 1);
-
-    // this.simulateBlockTime();
   }
 }
 
