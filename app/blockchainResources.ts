@@ -25,16 +25,14 @@ export let blockchainResources: BlockchainResources = {
   approvedNetwork: false,
   networkId: 0,
   daiAddress: "0x",
-  captureTheBlockContractAddress: "0x",
+  commmunityFactoryAddress: "0x",
   // @ts-ignore
   signer: null,
   signerAddress: "",
   isCipher: false,
   isMetaMask: false,
   isStatus: false,
-  isToshi: false,
-  // provider: undefined,
-  ethereum: undefined,
+  isToshi: false
 };
 
 async function fetchFromWindow(){
