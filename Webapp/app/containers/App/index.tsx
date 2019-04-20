@@ -25,14 +25,12 @@ import AppWrapper from '../../components/AppWrapper/index';
 import routes from './routes';
 import saga from './saga';
 import TxLoadingModal from 'components/TxLoadingModal';
+import selectApp from './selectors';
 
 interface OwnProps { }
 
 interface StateProps {
-  isLoggedIn: boolean;
   ethAddress: string;
-  profileImage: string;
-  displayName: string;
   txPending: boolean;
   txRemaining: number;
   txContext: string;
@@ -59,7 +57,7 @@ const App: React.SFC<Props> = (props: Props) => {
   );
 };
 
-const mapStateToProps = state => state;
+const mapStateToProps = state => selectApp(state);
 
 const mapDispatchToProps = (dispatch) => ({
 
