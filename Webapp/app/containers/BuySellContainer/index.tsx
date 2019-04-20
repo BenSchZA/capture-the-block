@@ -10,7 +10,9 @@ import { compose, Dispatch } from 'redux';
 import BuySellControl from 'components/BuySellControl';
 import { ApplicationRootState } from 'types';
 
-interface OwnProps {}
+interface OwnProps {
+  side: number,
+}
 
 interface DispatchProps {}
 
@@ -18,15 +20,18 @@ interface StateProps {}
 
 type Props = DispatchProps & OwnProps & StateProps;
 
-const BuySellContainer: React.SFC<Props> = (props: Props) => {
-  return <BuySellControl />;
+const BuySellContainer: React.SFC<Props> = ({side}: Props) => {
+  return <BuySellControl 
+    side={side} 
+    onBuyClick={() => {console.log('buy')}}
+    onSellClick={() => {console.log('sell')}}/>;
 };
 
 const mapStateToProps = (state:ApplicationRootState, props: OwnProps): StateProps => {
   return {};
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
+function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
   return {
     dispatch: dispatch,
   };

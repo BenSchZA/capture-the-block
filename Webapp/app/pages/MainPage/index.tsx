@@ -23,8 +23,8 @@ const MainPage: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
         <Grid item xs={6}>
           <Grid container>
             <Grid item xs={12}><MatchVisualisationContainer /></Grid>
-            <Grid item xs={6}><BuySellContainer /></Grid>
-            <Grid item xs={6}><BuySellContainer /></Grid>
+            <Grid item xs={6}><BuySellContainer side={0} /></Grid>
+            <Grid item xs={6}><BuySellContainer side={1} /></Grid>
           </Grid>
         </Grid>
         <Grid item xs={6}>
