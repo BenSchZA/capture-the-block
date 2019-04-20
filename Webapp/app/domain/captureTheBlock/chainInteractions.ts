@@ -52,8 +52,8 @@ export async function sellTokenTx(side: number){
 export async function startMatchTx(numberOfSides: number, targetSupply: number, gradient: number){
 	try{
 		const {provider, signer} = await getBlockchainObjects();
-    const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
-		const txReceipt = await(await captureTheBlockContract.startMatch(numberOfSides, targetSupply, gradient)).wait();
+    	const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
+		const txReceipt = await(await captureTheBlockContract.startMatch(ethers.utils.bigNumberify(numberOfSides), ethers.utils.bigNumberify(targetSupply), ethers.utils.bigNumberify(gradient))).wait();
 
 		const matchStartedEvent = captureTheBlockContract.interface.parseLog(await(txReceipt.events.filter(
       event => event.eventSignature == captureTheBlockContract.interface.events.MatchStarted.signature
@@ -128,7 +128,7 @@ export async function getTotalSupply(index: number, side: number){
     	const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
 		const totalSupply = await captureTheBlockContract.getSideTotalSupply(index, side);
 
-		return parseFloat(ethers.utils.formatUnits(totalSupply, 18));;
+		return parseFloat(ethers.utils.formatUnits(totalSupply, 0));
 	}
 	catch(e){
 		throw e;

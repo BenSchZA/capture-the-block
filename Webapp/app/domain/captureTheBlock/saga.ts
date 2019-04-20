@@ -1,5 +1,5 @@
 
-import { call, fork, put, take } from 'redux-saga/effects';
+import { call, fork, put, take, delay } from 'redux-saga/effects';
 import * as captureTheBlockActions from './actions';
 import { 
   getMatch, 
@@ -17,9 +17,10 @@ import {
 import { Match } from './types';
 import { setMatchAction, claimWinningsAction } from './actions';
 import { ethers } from 'ethers';
-import { setTxContextAction } from 'domain/transactionManagement/actions';
+import { setTxContextAction, setRemainingTxCountAction } from 'domain/transactionManagement/actions';
 
 export function* fetchMatch(index: number){
+  debugger;
   if (index === 0) {return;};
   let newMatch: Match = {
     ended: false,
@@ -31,11 +32,18 @@ export function* fetchMatch(index: number){
     targetSupply: 0,
     winner: 0
   };
+  yield delay(5000);
+  debugger;
   const matchData = yield call(getMatch, index);
+  debugger;
   newMatch.targetSupply = parseFloat(`${ethers.utils.formatUnits(matchData[1], 18)}`);
+  debugger;
   newMatch.gradient = parseFloat(`${ethers.utils.formatUnits(matchData[3], 18)}`);
+  debugger;
   newMatch.prize = parseFloat(`${ethers.utils.formatUnits(matchData[2], 18)}`);
+  debugger;
   newMatch.ended = matchData[4];
+  debugger;
   newMatch.numberOfSides = matchData[0];
 
   newMatch.sides = [{
@@ -51,13 +59,18 @@ export function* fetchMatch(index: number){
     balance: yield call(getBalanceOf, index, 1),
     totalSupply: yield call(getTotalSupply, index, 1),
   }]
+  debugger;
 
   yield put(setMatchAction(newMatch))
 }
 
 export function* fetchMatches(currentMatch: number){
+  debugger;
   for(let i = currentMatch; i > 0;  i--){
-    yield fork(fetchMatch, i);
+    debugger;
+    if(i != 0){
+      yield fork(fetchMatch, i);
+    }
   }
 }
 
@@ -73,6 +86,7 @@ export function* fetchMatchListener() {
 export function* fetchAllListener() {
   while (true) {
     yield take(captureTheBlockActions.fetchAllAction);
+    debugger;
     const index = yield call(matchIndex);
     yield fork(fetchMatches, parseInt(`${ethers.utils.formatUnits(index, 0)}`))
   }
@@ -82,10 +96,17 @@ export function* fetchAllListener() {
 export function* startMatchListener(){
   while(true){
     const {numberOfSides, targetSupply, gradient} = (yield take(captureTheBlockActions.startMatchAction.request)).payload;
+    debugger;
     try{
+      debugger;
       yield put(setTxContextAction(`Starting match`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
-      yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
+      debugger;
+      yield put(setRemainingTxCountAction(0));
+      const temp = parseInt(ethers.utils.formatUnits(index, 0))
+      yield fork(fetchMatch, temp);
+      debugger;
       yield put(captureTheBlockActions.startMatchAction.success())
     }
     catch(e){
@@ -99,7 +120,9 @@ export function* buyTokenListener(){
     const side = (yield take(captureTheBlockActions.buyTokenAction.request)).payload
     try{
       yield put(setTxContextAction(`Buying token`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(buyTokenTx, side);
+      yield put(setRemainingTxCountAction(0));
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.buyTokenAction.success())
     }
@@ -114,7 +137,9 @@ export function* sellTokenListener(){
     const side = (yield take(captureTheBlockActions.sellTokenAction.request)).payload
     try{
       yield put(setTxContextAction(`Selling token`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(sellTokenTx, side);
+      yield put(setRemainingTxCountAction(0));
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.sellTokenAction.success())
     }
@@ -129,7 +154,9 @@ export function* ClaimWinningsListener(){
     const index = (yield take(captureTheBlockActions.claimWinningsAction.request)).payload
     try{
       yield put(setTxContextAction(`Claiming winnings`));
+      yield put(setRemainingTxCountAction(1));
       yield call(claimWinningsTx, index);
+      yield put(setRemainingTxCountAction(0));
 
       yield fork(fetchMatch, index);
       yield put(captureTheBlockActions.claimWinningsAction.success())

@@ -5,22 +5,26 @@ import { forwardTo } from 'utils/history';
 import * as authenticationActions from './actions';
 import {fetchAllAction} from '../captureTheBlock/actions';
 import ActionTypes from './constants';
-import { refreshBalancesAction, setTxContextAction } from 'domain/transactionManagement/actions';
+import { refreshBalancesAction, setTxContextAction, setRemainingTxCountAction, setPendingState } from 'domain/transactionManagement/actions';
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
 import { balanceOfTx, getApproval, mintTx, approveTx } from './chainInteractions';
 
 export function* checkDaiRequirements(){
   try {
-    console.log(yield call(getApproval));
-    const allowance = yield call(getApproval);
-    if(allowance == 0){
+    const allowancePassed = yield call(getApproval);
+    if(!allowancePassed){
       const balance = yield call(balanceOfTx);
       if(balance == 0){
+        yield put(setRemainingTxCountAction(2));
+        yield put(setPendingState(true));
         yield put(setTxContextAction(`Claiming Free tokens`));
         const mintedAmount = yield call(mintTx);
       }
+      yield put(setRemainingTxCountAction(1));
+      yield put(setPendingState(true));
       yield put(setTxContextAction(`Approving Transfers to Game`));
       const approvedForAmount = yield call(approveTx);
+      yield put(setPendingState(false));
     }
   }
   catch(e){

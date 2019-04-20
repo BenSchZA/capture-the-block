@@ -7,9 +7,9 @@ import rootCaptureTheBlockSaga from 'domain/captureTheBlock/saga';
 export default function * root() {
   // Add other global DAEMON sagas here.
   // To prevent performance bottlenecks add sagas with caution.
+  yield fork(AuthSaga);
 
   yield fork(TransactionManagementSaga);
 
-  yield fork(AuthSaga);
   yield fork(rootCaptureTheBlockSaga);
 }
