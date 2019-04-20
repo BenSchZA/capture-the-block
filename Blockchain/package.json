@@ -9,6 +9,7 @@
     "test": "etherlime compile --runs=999 && etherlime test --skip-compilation=true",
     "debug": "node --inspect-brk ./node_modules/etherlime/cli.js --timeout 30000",
     "test:debug": "yarn debug test",
+    "deploy": "etherlime deploy --runs=999",
     "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=999"
   },
   "author": "Ryan N, Ben S, Michael Y, Michael J",
