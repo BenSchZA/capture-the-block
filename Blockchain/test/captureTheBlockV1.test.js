@@ -109,7 +109,7 @@ describe('Capture The Block V1', () => {
             let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
             assert.isOk(matchData[4], "Initial match slot not set up correctly");
 
-            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+            await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
 
             currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
             assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
@@ -129,7 +129,7 @@ describe('Capture The Block V1', () => {
                 let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
                 assert.isOk(matchData[4], "Initial match slot not set up correctly");
     
-                await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+                await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
     
                 currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
                 assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
@@ -150,7 +150,7 @@ describe('Capture The Block V1', () => {
                 let balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not initalized correctly")
 
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
 
@@ -165,18 +165,18 @@ describe('Capture The Block V1', () => {
                 assert.equal(ethers.utils.formatUnits(getSidesPoolBalance, 18), "1.5", "Prize not updated correctly")
             })
             it('Prices the second token correctly', async () => {
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 let priceToBuySideA = await captureTheBlockInstance.from(player1).priceToBuy(1, 0);
                 assert.equal(ethers.utils.formatUnits(priceToBuySideA, 18), "4.5", "Price Incorrect")
             })
             it('Purchases the second token successfully', async () => {
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 let priceToBuySideA = await captureTheBlockInstance.from(player1).priceToBuy(1, 0);
                 assert.equal(ethers.utils.formatUnits(priceToBuySideA, 18), "4.5", "Price Incorrect")
             })
             
             it('Prices selling the first token on gradient 3 at 1.5Dai', async () => {
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 let priceToSellSideA = await captureTheBlockInstance.from(player1).rewardForSell(1, 0);
                 assert.equal(ethers.utils.formatUnits(priceToSellSideA, 18), "1.5", "Price Incorrect")
             })
@@ -184,7 +184,7 @@ describe('Capture The Block V1', () => {
                 let balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not initalized correctly")
 
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
 
@@ -198,7 +198,7 @@ describe('Capture The Block V1', () => {
                 const getSidesPoolBalance = await captureTheBlockInstance.from(player1).getMatchSidePoolBalance(1,0);
                 assert.equal(ethers.utils.formatUnits(getSidesPoolBalance, 18), "1.5", "Prize not updated correctly")
 
-                await(await captureTheBlockInstance.from(player1).sellToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).sellToken(0))
                 balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not updated correctly")
 
@@ -207,18 +207,18 @@ describe('Capture The Block V1', () => {
 
             })
             it('Prices selling the second token correctly', async () => {
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 let priceToSellSideA = await captureTheBlockInstance.from(player1).rewardForSell(1, 0);
                 assert.equal(ethers.utils.formatUnits(priceToSellSideA, 18), "4.5", "Price Incorrect")
             })
             it('Sells the second token successfully', async () => {
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                 balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "994.0", "Balance not updated correctly")
 
-                await(await captureTheBlockInstance.from(player1).sellToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).sellToken(0))
                 balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
                 assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
 
@@ -227,46 +227,46 @@ describe('Capture The Block V1', () => {
             describe("Full Matches", () =>{
                 it('Plays a match 4 players beat 2 opposing', async () =>{
                     // Side A starts (A:1, B:0)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
     
                     // Side B takes the lead (A:1, B:2)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
     
                     // A swarm hits side A (A:5, B:2)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
     
                     // Side B tries to catch up (A:5, B:4)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
     
                     // Player 1 panics (A:8, B:4)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
     
                     // Player 2 is super keen (A:9, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
     
                     // Player 6 Wants to hammer it (A:13, B:4)
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
     
                     // Player 2 is so close (A:14, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
     
     
                     // Side B is putting up a fight (A:15, B:8)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
                       
                     // Player 1 ends the match
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
      
                     let matchData = await captureTheBlockInstance.from(player1).getMatch(1);
                     assert.isOk(matchData[4], "Match not ended");
@@ -275,46 +275,46 @@ describe('Capture The Block V1', () => {
 
                 it("Distributes winnings succesfully", async ()=>{
                     // Side A starts (A:1, B:0)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                         
                     // Side B takes the lead (A:1, B:2)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
 
                     // A swarm hits side A (A:5, B:2)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
 
                     // Side B tries to catch up (A:5, B:4)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
 
                     // Player 1 panics (A:8, B:4)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
 
                     // Player 2 is super keen (A:9, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
 
                     // Player 6 Wants to hammer it (A:13, B:4)
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
 
                     // Player 2 is so close (A:14, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
 
 
                     // Side B is putting up a fight (A:15, B:8)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
                     
                     // Player 1 ends the match
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
 
                     let matchData = await captureTheBlockInstance.from(player1).getMatch(1);
                     assert.isOk(matchData[4], "Match not ended");
@@ -335,46 +335,46 @@ describe('Capture The Block V1', () => {
 
                 it("Issues a rematch", async () => {
                     // Side A starts (A:1, B:0)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
                     
                     // Side B takes the lead (A:1, B:2)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
 
                     // A swarm hits side A (A:5, B:2)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player3).purchaseToken(0))
 
                     // Side B tries to catch up (A:5, B:4)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
 
                     // Player 1 panics (A:8, B:4)
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
 
                     // Player 2 is super keen (A:9, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
 
                     // Player 6 Wants to hammer it (A:13, B:4)
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
-                    await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
+                    await(await captureTheBlockInstance.from(player6).purchaseToken(0))
 
                     // Player 2 is so close (A:14, B:4)
-                    await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player2).purchaseToken(0))
 
 
                     // Side B is putting up a fight (A:15, B:8)
-                    await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
-                    await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
+                    await(await captureTheBlockInstance.from(player4).purchaseToken(1))
+                    await(await captureTheBlockInstance.from(player5).purchaseToken(1))
                     
                     // Player 1 ends the match
-                    await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                    await(await captureTheBlockInstance.from(player1).purchaseToken(0))
 
                     let matchData = await captureTheBlockInstance.from(player1).getMatch(1);
                     assert.isOk(matchData[4], "Match not ended");
@@ -390,7 +390,7 @@ describe('Capture The Block V1', () => {
                     await(await captureTheBlockInstance.from(player6).claimWinnings(1));
                 
                     // Rematch
-                    await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+                    await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
                 
                     let currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
                     assert.isOk(currentMatchIndex.eq(2), "Match incorrect");
@@ -413,7 +413,7 @@ describe('Capture The Block V1', () => {
             let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
             assert.isOk(matchData[4], "Initial match slot not set up correctly");
 
-            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+            await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
 
             currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
             assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
