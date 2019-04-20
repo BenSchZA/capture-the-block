@@ -23,8 +23,6 @@ interface Player {
 }
 
 class Map extends React.Component<Props> {
-  public state = {};
-
   constructor(props) {
     super(props);
     this.populatePhaserMap.bind(this);

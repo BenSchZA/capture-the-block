@@ -1,5 +1,5 @@
 
-import { call, fork, put, take } from 'redux-saga/effects';
+import { call, fork, put, take, delay } from 'redux-saga/effects';
 import * as captureTheBlockActions from './actions';
 import { 
   getMatch, 
@@ -17,7 +17,7 @@ import {
 import { Match } from './types';
 import { setMatchAction, claimWinningsAction } from './actions';
 import { ethers } from 'ethers';
-import { setTxContextAction } from 'domain/transactionManagement/actions';
+import { setTxContextAction, setRemainingTxCountAction } from 'domain/transactionManagement/actions';
 
 export function* fetchMatch(index: number){
   if (index === 0) {return;};
@@ -31,9 +31,10 @@ export function* fetchMatch(index: number){
     targetSupply: 0,
     winner: 0
   };
+  yield delay(5000);
   const matchData = yield call(getMatch, index);
-  newMatch.targetSupply = parseFloat(`${ethers.utils.formatUnits(matchData[1], 18)}`);
-  newMatch.gradient = parseFloat(`${ethers.utils.formatUnits(matchData[3], 18)}`);
+  newMatch.targetSupply = parseFloat(`${ethers.utils.formatUnits(matchData[1], 0)}`);
+  newMatch.gradient = parseFloat(`${ethers.utils.formatUnits(matchData[3], 0)}`);
   newMatch.prize = parseFloat(`${ethers.utils.formatUnits(matchData[2], 18)}`);
   newMatch.ended = matchData[4];
   newMatch.numberOfSides = matchData[0];
@@ -57,7 +58,9 @@ export function* fetchMatch(index: number){
 
 export function* fetchMatches(currentMatch: number){
   for(let i = currentMatch; i > 0;  i--){
-    yield fork(fetchMatch, i);
+    if(i != 0){
+      yield fork(fetchMatch, i);
+    }
   }
 }
 
@@ -84,8 +87,11 @@ export function* startMatchListener(){
     const {numberOfSides, targetSupply, gradient} = (yield take(captureTheBlockActions.startMatchAction.request)).payload;
     try{
       yield put(setTxContextAction(`Starting match`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
-      yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
+      yield put(setRemainingTxCountAction(0));
+      const temp = parseInt(ethers.utils.formatUnits(index, 0))
+      yield fork(fetchMatch, temp);
       yield put(captureTheBlockActions.startMatchAction.success())
     }
     catch(e){
@@ -99,7 +105,9 @@ export function* buyTokenListener(){
     const side = (yield take(captureTheBlockActions.buyTokenAction.request)).payload
     try{
       yield put(setTxContextAction(`Buying token`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(buyTokenTx, side);
+      yield put(setRemainingTxCountAction(0));
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.buyTokenAction.success())
     }
@@ -114,7 +122,9 @@ export function* sellTokenListener(){
     const side = (yield take(captureTheBlockActions.sellTokenAction.request)).payload
     try{
       yield put(setTxContextAction(`Selling token`));
+      yield put(setRemainingTxCountAction(1));
       const index = yield call(sellTokenTx, side);
+      yield put(setRemainingTxCountAction(0));
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(captureTheBlockActions.sellTokenAction.success())
     }
@@ -129,7 +139,9 @@ export function* ClaimWinningsListener(){
     const index = (yield take(captureTheBlockActions.claimWinningsAction.request)).payload
     try{
       yield put(setTxContextAction(`Claiming winnings`));
+      yield put(setRemainingTxCountAction(1));
       yield call(claimWinningsTx, index);
+      yield put(setRemainingTxCountAction(0));
 
       yield fork(fetchMatch, index);
       yield put(captureTheBlockActions.claimWinningsAction.success())

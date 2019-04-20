@@ -34,7 +34,7 @@ const MainPage: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
       <Grid container>
         <Grid item xs={12}>
           <Grid container>
-            <Grid item xs={12}><MatchVisualisationContainer players={players} /></Grid>
+            <Grid item xs={12}><MatchVisualisationContainer /></Grid>
             <Grid item xs={6}><BuySellContainer side={0} /></Grid>
             <Grid item xs={6}><BuySellContainer side={1} /></Grid>
           </Grid>

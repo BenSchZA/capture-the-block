@@ -22,6 +22,12 @@ const defaultConfigs = {
     gasLimit: 4700000
 }
 
+const goerliDefaultConfigs = {
+    gasPrice: 20000000000,
+    gasLimit: 4700000,
+    chainId: 5 // Suitable for deploying on private networks like Quorum
+}
+
 const deploy = async (network, secret) => {
 	if(!secret){
 		secret = DEPLOYER_PRIVATE_KEY;
@@ -29,6 +35,21 @@ const deploy = async (network, secret) => {
 	let deployer, daiAddress;
 	
 	switch(network){
+		case "goerli": {
+			console.log(secret)
+			deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, "https://rpc.goerli.mudit.blog/", goerliDefaultConfigs)
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
+				false, 
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
+			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+		}
 		case "devnet": {
 			deployer = new etherlime.EtherlimeDevnetDeployer(secret, 8545, defaultConfigs)
 			let pseudoDaiInstance = await deployer.deploy(
