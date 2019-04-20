@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Phaser from 'phaser';
 import Scene from './scene';
+import { Button } from '@material-ui/core';
 
 const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => createStyles({
 
@@ -16,15 +17,10 @@ enum Side {
   RIGHT
 }
 
-enum PlayerType {
-  ME,
-  PARTICIPANT
-}
-
 interface Player {
   side: Side,
-  type: PlayerType,
   progress: Number,
+  sprite: any,
 }
 
 class Map extends React.Component<Props> {
@@ -43,7 +39,7 @@ class Map extends React.Component<Props> {
 
     const config = {
       type: Phaser.CANVAS,
-      mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
       // min: {
       //   width: 800,
       //   height: 600
@@ -53,7 +49,7 @@ class Map extends React.Component<Props> {
       //   height: 1200
       // },
       width: '100%',
-      height: '100%',
+      // height: '',
       backgroundColor: '#00b5bd',
       parent: 'phaser-div',
       pixelArt: true,
@@ -71,18 +67,23 @@ class Map extends React.Component<Props> {
   componentDidMount() {
     this.populatePhaserMap();
 
-    this.scene.setPlayers([
-      {
-        side: Side.LEFT,
-        type: PlayerType.ME,
-        progress: 0,
-      },
-      {
-        side: Side.RIGHT,
-        type: PlayerType.PARTICIPANT,
-        progress: 0,
-      },
-    ]);
+    let progress = 0;
+    let direction = true;
+    
+    setInterval(() => {
+      this.scene.setProgress(Side.LEFT, progress);
+      this.scene.setProgress(Side.RIGHT, progress);
+      if(direction) {
+        progress = progress + 0.1;
+      } else {
+        progress = progress - 0.1;
+      }
+      if(progress >= 0.9) direction = false;
+      if(progress <= 0.1) direction = true;
+      console.log(progress);
+    }, 5000);
+    // this.scene.setProgress(Side.LEFT, 0.5);
+    // this.scene.setProgress(Side.RIGHT, 1);
   }
 
   shouldComponentUpdate() {

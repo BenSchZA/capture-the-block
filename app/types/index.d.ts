@@ -1,7 +1,8 @@
 import { Reducer, Store } from 'redux';
 import { ContainerState as GlobalState } from '../containers/App/types';
 import { DomainState as AuthenticationState } from '../domain/authentication/types';
-import { DomainState as TransactionManagementState} from '../domain/transactionManagement/types';
+import { DomainState as TransactionManagementState } from '../domain/transactionManagement/types';
+import { DomainState as CaptureTheBlockState } from '../domain/captureTheBlock/types';
 
 export interface LifeStore extends Store<{}> {
   injectedReducers?: any;
@@ -20,10 +21,9 @@ export interface InjectSagaParams {
   mode?: string | undefined;
 }
 
-// Your root reducer type, which is your redux state types also
 export interface ApplicationRootState {
-  readonly global: GlobalState;
-  // Domains
+  readonly global: {},
   readonly authentication: AuthenticationState;
-  readonly transactionManagement: TransactionManagementState
+  readonly transactionManagement: TransactionManagementState;
+  readonly captureTheBlock: CaptureTheBlockState;
 }

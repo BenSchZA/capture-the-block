@@ -25,7 +25,7 @@ export let blockchainResources: BlockchainResources = {
   approvedNetwork: false,
   networkId: 0,
   daiAddress: "0x",
-  commmunityFactoryAddress: "0x",
+  captureTheBlockContractAddress: "0x",
   // @ts-ignore
   signer: null,
   signerAddress: "",
@@ -82,21 +82,16 @@ export async function initBlockchainResources() {
 
     if(chainId == 1){
       blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
-      blockchainResources.captureTheBlockContractAddress = `${process.env.MAINNET_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else if(chainId == 4){
       blockchainResources.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
-      blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else {
       throw "Invalid network"
     }
 
-    // const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(captureTheBlockContractABI), blockchainResources.provider)).connect(blockchainResources.signer);
-
-    // const publishedBlock = parseInt(ethers.utils.formatUnits(await captureTheBlockContract.publishedBlocknumber(), 0));
-
-    // blockchainResources.publishedBlock = publishedBlock;
   }
   catch(e){
     throw e;
