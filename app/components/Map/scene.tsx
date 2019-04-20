@@ -69,8 +69,6 @@ export default class Scene extends Phaser.Scene {
     if(who === PlayerType.ME) {
       this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
       this.createContext.cameras.main.startFollow(player);
-    } else {
-      player.body.setSize(60, 89, 0, 41); 
     }
     
     player.setMaxVelocity(300, 400).setFriction(800, 0);
