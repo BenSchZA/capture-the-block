@@ -1,0 +1,55 @@
+# Frontend Deployment (Pod)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: capture-the-block
+  namespace: default
+  labels:
+    app: capture-the-block
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: capture-the-block
+  # Pod template
+  template:
+    metadata:
+      labels:
+        app: capture-the-block
+    spec:
+      containers:
+        - name: capture-the-block
+          image: yodascholtz/capture-the-block:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: APP_NAME
+              value: "capture-the-block"
+            - name: APP_SCHEMA
+              value: "https" # Check this
+            - name: APP_HOST
+              value: "0.0.0.0"
+            - name: APP_PORT
+              value: "3000"
+            - name: RINKEBY_DAI_ADDRESS
+              value: "0x80bd574Ac581D398c4C9A4CFad7D573416C9C18C"
+            - name: RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS
+              value: "0x7BF9505d644499612998802A8163627411316f9a"
+---
+# Frontend Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: capture-the-block
+  namespace: default
+  labels:
+    app: capture-the-block
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    app: capture-the-block
