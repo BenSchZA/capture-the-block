@@ -25,14 +25,23 @@ class Map extends React.Component<Props> {
   populatePhaserMap() {
     const config = {
       type: Phaser.CANVAS,
-      width: 800,
-      height: 600,
+      // mode: Phaser.Scale.FIT,
+      // min: {
+      //   width: 800,
+      //   height: 600
+      // },
+      // max: {
+      //   width: 1600,
+      //   height: 1200
+      // },
+      width: 1600,
+      height: 1200,
       backgroundColor: '#2d2d2d',
       parent: 'phaser-div',
       pixelArt: true,
       physics: {
         default: 'impact',
-        impact: { gravity: 200 }
+        impact: { gravity: 200 }, //{x: 0, y: 50}
       },
       scene: [Scene]
     };
