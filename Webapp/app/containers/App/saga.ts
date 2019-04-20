@@ -2,6 +2,7 @@ import {fork} from 'redux-saga/effects';
 
 import AuthSaga from '../../domain/authentication/saga';
 import TransactionManagementSaga from '../../domain/transactionManagement/saga';
+import rootCaptureTheBlockSaga from 'domain/captureTheBlock/saga';
 
 export default function * root() {
   // Add other global DAEMON sagas here.
@@ -10,5 +11,5 @@ export default function * root() {
   yield fork(TransactionManagementSaga);
 
   yield fork(AuthSaga);
-
+  yield fork(rootCaptureTheBlockSaga);
 }

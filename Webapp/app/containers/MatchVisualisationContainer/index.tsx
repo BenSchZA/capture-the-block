@@ -22,18 +22,14 @@ const MatchVisualisationContainer: React.SFC<Props> = (props: Props) => {
 };
 
 const mapStateToProps = (state: ApplicationRootState): StateProps => {
-  return {};
-}
-
-function mapDispatchToProps(dispatch: Dispatch) {
   return {
-    dispatch: dispatch,
+    ...state.captureTheBlock.match,
   };
 }
 
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 );
 
 export default compose(withConnect)(MatchVisualisationContainer);

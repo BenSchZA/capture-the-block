@@ -10,6 +10,7 @@ import Redux from 'redux';
 // tslint:disable-next-line:no-implicit-dependencies
 import authenticationReducer from './domain/authentication/reducer';
 import transactionManagementReducer from 'domain/transactionManagement/reducer';
+import captureTheBlockReducer from 'domain/captureTheBlock/reducer';
 
 /**
  * Creates the main reducer with the dynamically injected ones
@@ -18,6 +19,7 @@ export default function createReducer(injectedReducers: Redux.ReducersMapObject 
   return combineReducers({
     authentication: authenticationReducer,
     transactionManagement: transactionManagementReducer,
+    captureTheBlock: captureTheBlockReducer,
     ...injectedReducers,
   });
 }
