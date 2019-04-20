@@ -41,7 +41,7 @@ contract CaptureTheBlockV1 {
         matches[matchIndex_].ended = true;
     }
 
-    function createMatch(uint8 _numberOfSides, uint256 _targetSupply, uint256 _gradient) public returns(bool) {
+    function startMatch(uint8 _numberOfSides, uint256 _targetSupply, uint256 _gradient) public returns(bool) {
         require(matches[matchIndex_].ended, "Match still active");
         matchIndex_ = matchIndex_ + 1;
         matches[matchIndex_].gradient = _gradient;

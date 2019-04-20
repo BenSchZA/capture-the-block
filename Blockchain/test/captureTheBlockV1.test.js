@@ -109,7 +109,7 @@ describe('Capture The Block V1', () => {
             let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
             assert.isOk(matchData[4], "Initial match slot not set up correctly");
 
-            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+            await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
 
             currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
             assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
@@ -129,7 +129,7 @@ describe('Capture The Block V1', () => {
                 let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
                 assert.isOk(matchData[4], "Initial match slot not set up correctly");
     
-                await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+                await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
     
                 currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
                 assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
@@ -390,7 +390,7 @@ describe('Capture The Block V1', () => {
                     await(await captureTheBlockInstance.from(player6).claimWinnings(1));
                 
                     // Rematch
-                    await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+                    await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
                 
                     let currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
                     assert.isOk(currentMatchIndex.eq(2), "Match incorrect");
@@ -413,7 +413,7 @@ describe('Capture The Block V1', () => {
             let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
             assert.isOk(matchData[4], "Initial match slot not set up correctly");
 
-            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+            await(await await captureTheBlockInstance.from(player1).startMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
 
             currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
             assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
