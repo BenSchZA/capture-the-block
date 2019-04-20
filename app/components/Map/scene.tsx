@@ -1,5 +1,15 @@
 import Phaser from 'phaser';
 
+enum Side {
+  LEFT,
+  RIGHT
+}
+
+enum Player {
+  ME,
+  PARTICIPANT
+}
+
 export default class Scene extends Phaser.Scene {
 
   game;
@@ -38,17 +48,17 @@ export default class Scene extends Phaser.Scene {
     return {x: x_prog, y: y_prog};
   }
 
-  createPlayerLeft() {
-    const player = this.impact.add.image(this.start_x, this.start_y, 'player');
-    player.setMaxVelocity(300, 400).setFriction(800, 0);
-    player.body.accelGround = 1200;
-    player.body.accelAir = 600;
-    player.body.jumpSpeed = 300;
-    return player;
-  }
+  createPlayer(who, side) {
+    let player;
 
-  createPlayerRight() {
-    const player = this.impact.add.image(this.start_x2, this.start_y2, 'player');
+    let type = who === Player.ME ? Player.ME.toString() : Player.PARTICIPANT.toString()
+
+    if(side === Side.LEFT) {
+      player = this.impact.add.image(this.start_x, this.start_y, type);
+    } else {
+      player = this.impact.add.image(this.start_x2, this.start_y2, type);
+    }
+    
     player.setMaxVelocity(300, 400).setFriction(800, 0);
     player.body.accelGround = 1200;
     player.body.accelAir = 600;
@@ -84,7 +94,8 @@ export default class Scene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON('map', 'impact-tilemap.json');
     this.load.image('kenney', 'kenney.png');
-    this.load.image('player', 'phaser-dude.png');
+    this.load.image(Player.PARTICIPANT.toString(), 'phaser-dude.png');
+    this.load.image(Player.ME.toString(), 'rick.png');
   }
 
   player1;
@@ -126,10 +137,10 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    this.player1 = this.createPlayerLeft();
-    this.player2 = this.createPlayerLeft();
-    this.player3 = this.createPlayerRight();
-    this.player4 = this.createPlayerRight();
+    this.player1 = this.createPlayer(Player.PARTICIPANT, Side.LEFT);
+    this.player2 = this.createPlayer(Player.ME, Side.LEFT);
+    this.player3 = this.createPlayer(Player.PARTICIPANT, Side.RIGHT);
+    this.player4 = this.createPlayer(Player.PARTICIPANT, Side.RIGHT);
  
     this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
     this.cameras.main.startFollow(this.player1);
@@ -152,13 +163,18 @@ export default class Scene extends Phaser.Scene {
   update(time, delta) {
     console.log(time - this.lastUpdateTime);
     if(time - this.lastUpdateTime > 5000) {
-      this.movePlayerLeft(this.player1, 0.1*this.currentBlock);
-      this.currentBlock++;
+      // this.movePlayerLeft(this.player1, 0.1);
+      // this.movePlayerLeft(this.player2, 0.5);
+      // this.movePlayerRight(this.player3, 0.3);
+      // this.movePlayerRight(this.player4, 1);
       this.lastUpdateTime = time;
     }
+
+    this.movePlayerLeft(this.player1, 0.1);
     this.movePlayerLeft(this.player2, 0.5);
     this.movePlayerRight(this.player3, 0.3);
     this.movePlayerRight(this.player4, 1);
+
     // this.simulateBlockTime();
   }
 }
