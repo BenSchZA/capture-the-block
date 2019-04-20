@@ -24,15 +24,9 @@ const mapStateToProps = (state: ApplicationRootState): StateProps => {
   return {};
 }
 
-function mapDispatchToProps(dispatch: Dispatch) {
-  return {
-    dispatch: dispatch,
-  };
-}
-
 const withConnect = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  null,
 );
 
 export default compose(withConnect)(MatchVisualisationContainer);

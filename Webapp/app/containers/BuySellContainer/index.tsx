@@ -4,41 +4,40 @@
  *
  */
 
-import React, { Fragment } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import BuySellControl from 'components/BuySellControl';
-import { ApplicationRootState } from 'types';
+import * as actions from '../../domain/captureTheBlock/actions';
 
 interface OwnProps {
   side: number,
 }
 
-interface DispatchProps {}
+interface DispatchProps {
+  onBuyClick(): void;
+  onSellClick(): void;
+}
 
-interface StateProps {}
+interface StateProps { }
 
 type Props = DispatchProps & OwnProps & StateProps;
 
-const BuySellContainer: React.SFC<Props> = ({side}: Props) => {
-  return <BuySellControl 
-    side={side} 
-    onBuyClick={() => {console.log('buy')}}
-    onSellClick={() => {console.log('sell')}}/>;
+const BuySellContainer: React.SFC<Props> = ({ side, onBuyClick, onSellClick }: Props) => {
+  return <BuySellControl
+    side={side}
+    onBuyClick={onBuyClick}
+    onSellClick={onSellClick} />;
 };
 
-const mapStateToProps = (state:ApplicationRootState, props: OwnProps): StateProps => {
-  return {};
-}
+const mapDispatchToProps = (dispatch: Dispatch, { side }: OwnProps): DispatchProps => ({
+  onBuyClick: () => dispatch(actions.buyTokenAction.request(side)),
+  onSellClick: () => dispatch(actions.sellTokenAction.request(side)),
+});
 
-function mapDispatchToProps(dispatch: Dispatch): DispatchProps {
-  return {
-    dispatch: dispatch,
-  };
-}
 
 const withConnect = connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps,
 );
 
