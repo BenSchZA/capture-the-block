@@ -49,13 +49,17 @@ interface StateProps {
 
 interface DispatchProps {
   startMatch(): void;
+  claimWinningsAction(index: number): void;
 }
 
 type Props = StateProps & DispatchProps & OwnProps;
 const App: React.SFC<Props> = ({
   captureTheBlock: {
     match: {
-      ended
+      ended,
+      sides,
+      winner,
+      index
     }
   },
   transactionManagement: {
@@ -63,18 +67,21 @@ const App: React.SFC<Props> = ({
     txRemaining,
     txContext
   },
-  startMatch }: Props) => {
+  startMatch,
+  claimWinningsAction
+   }: Props) => {
+     console.log(ended);
+     console.log(sides[winner].balance > 0);
   return (
     <AppWrapper
       ethAddress={blockchainResources.signerAddress}
       networkReady={true}
       networkId={blockchainResources.networkId} >
       <TxLoadingModal pendingTx={txPending} txRemaining={txRemaining} txContext={txContext}></TxLoadingModal>
-      <Route path='/' exact component={MainPage} />
-      {/* {ended ?
-        <Button onClick={startMatch}>Start Match</Button> :
+      {ended && sides[winner].balance === 0 ? <Button onClick={startMatch}>Start Match</Button> : 
+        (ended && sides[winner].balance > 0) ? <Button onClick={() => {claimWinningsAction(index)}}>Claim winnings</Button> :  
         <Route path='/' exact component={MainPage} />
-      } */}
+      }
     </AppWrapper>
   );
 };
@@ -83,8 +90,9 @@ const mapStateToProps = (state: ApplicationRootState) => ({
   ...state,
 })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  startMatch: () => dispatch(captureTheBlockActions.startMatchAction.request({ numberOfSides: 2, targetSupply: 15, gradient: 3 }))
+const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
+  startMatch: () => dispatch(captureTheBlockActions.startMatchAction.request({ numberOfSides: 2, targetSupply: 15, gradient: 3 })),
+  claimWinningsAction: (index) => dispatch(captureTheBlockActions.claimWinningsAction.request(index))
 })
 
 const withConnect = connect(
