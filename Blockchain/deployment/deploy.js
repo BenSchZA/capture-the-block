@@ -9,6 +9,7 @@ const etherlime = require('etherlime');
 const ethers = require('ethers');
 
 var PseudoDaiToken = require('../build/PseudoDaiToken.json');
+const CaptureTheBlockV1 = require('../build/CaptureTheBlockV1.json');
 
 const daiSettings = {
     name: "PDAI",
@@ -28,15 +29,19 @@ const deploy = async (network, secret) => {
 	let deployer, daiAddress;
 	
 	switch(network){
-		case "mainnet": {
-			daiAddress = DAI_ADDRESS;
-			communityFactoryInstance = await deployer.deploy(
-				CommunityFactoryV1, 
+		case "devnet": {
+			deployer = new etherlime.EtherlimeDevnetDeployer(secret, 8545, defaultConfigs)
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
 				false, 
-				daiAddress,
-				deployer.wallet.address,
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
 			);
-			break;
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
 		}
 		case "rinkeby":{
 			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, defaultConfigs);
@@ -47,6 +52,14 @@ const deploy = async (network, secret) => {
 				daiSettings.symbol, 
 				daiSettings.decimals
 			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+			break;
+		}
+		default: {
+			// TODO: mainnet deployment script using actual DAI address
 			break;
 		}
 	}
