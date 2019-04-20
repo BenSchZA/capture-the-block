@@ -78,8 +78,8 @@ const App: React.SFC<Props> = ({
       networkReady={true}
       networkId={blockchainResources.networkId} >
       <TxLoadingModal pendingTx={txPending} txRemaining={txRemaining} txContext={txContext}></TxLoadingModal>
-      {ended && sides[winner].balance === 0 ? <Button onClick={startMatch}>Start Match</Button> : 
-        (ended && sides[winner].balance > 0) ? <Button onClick={() => {claimWinningsAction(index)}}>Claim winnings</Button> :  
+      {ended && sides && sides[winner] && sides[winner].balance === 0 ? <Button onClick={startMatch}>Start Match</Button> : 
+        (ended && sides && sides[winner] &&  sides[winner].balance > 0) ? <Button onClick={() => {claimWinningsAction(index)}}>Claim winnings</Button> :  
         <Route path='/' exact component={MainPage} />
       }
     </AppWrapper>
