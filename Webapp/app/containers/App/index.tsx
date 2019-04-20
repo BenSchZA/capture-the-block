@@ -70,15 +70,13 @@ const App: React.SFC<Props> = ({
   startMatch,
   claimWinningsAction
    }: Props) => {
-     console.log(ended);
-     console.log(sides[winner].balance > 0);
   return (
     <AppWrapper
       ethAddress={blockchainResources.signerAddress}
       networkReady={true}
       networkId={blockchainResources.networkId} >
       <TxLoadingModal pendingTx={txPending} txRemaining={txRemaining} txContext={txContext}></TxLoadingModal>
-      {ended && sides && sides[winner] && sides[winner].balance === 0 ? <Button onClick={startMatch}>Start Match</Button> : 
+        {ended && sides && sides[winner] && sides[winner].balance === 0 ? <Button onClick={startMatch}>Start Match</Button> : 
         (ended && sides && sides[winner] &&  sides[winner].balance > 0) ? <Button onClick={() => {claimWinningsAction(index)}}>Claim winnings</Button> :  
         <Route path='/' exact component={MainPage} />
       }

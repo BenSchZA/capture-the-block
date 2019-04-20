@@ -57,11 +57,12 @@ export function* fetchMatch(index: number){
 }
 
 export function* fetchMatches(currentMatch: number){
-  for(let i = currentMatch; i > 0;  i--){
-    if(i != 0){
-      yield fork(fetchMatch, i);
-    }
-  }
+  // for(let i = currentMatch; i > 0;  i--){
+  //   if(i != 0){
+  //     yield fork(fetchMatch, i);
+  //   }
+  // }
+  yield fork(fetchMatch, currentMatch);
 }
 
 // Listeners

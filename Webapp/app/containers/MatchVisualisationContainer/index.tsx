@@ -37,7 +37,7 @@ type Props = DispatchProps & OwnProps & StateProps;
 
 const MatchVisualisationContainer: React.SFC<Props> = (props: Props) => {
   const players = props.captureTheBlock.match && 
-    props.captureTheBlock.match.sides.map((p, i) => ({side: i, progress: p.totalSupply}))
+    props.captureTheBlock.match.sides.map((p, i) => ({side: i, progress: p.totalSupply/props.captureTheBlock.match.targetSupply}))
   return <Map players={players}/>
 };
 

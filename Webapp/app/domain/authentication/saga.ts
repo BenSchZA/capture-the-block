@@ -66,7 +66,7 @@ export function* addressChangeListener() {
   while (true) {
     const newAddress = yield take(addressChangeEventChannel);
     yield put(authenticationActions.setEthAddress({ethAddress : newAddress}));
-    yield put(authenticationActions.logOut());
+    yield spawn(checkDaiRequirements);
     yield fork(connectWallet)
   }
 }
