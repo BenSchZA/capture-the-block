@@ -20,7 +20,6 @@ import { ethers } from 'ethers';
 import { setTxContextAction, setRemainingTxCountAction } from 'domain/transactionManagement/actions';
 
 export function* fetchMatch(index: number){
-  debugger;
   if (index === 0) {return;};
   let newMatch: Match = {
     ended: false,
@@ -33,17 +32,11 @@ export function* fetchMatch(index: number){
     winner: 0
   };
   yield delay(5000);
-  debugger;
   const matchData = yield call(getMatch, index);
-  debugger;
-  newMatch.targetSupply = parseFloat(`${ethers.utils.formatUnits(matchData[1], 18)}`);
-  debugger;
-  newMatch.gradient = parseFloat(`${ethers.utils.formatUnits(matchData[3], 18)}`);
-  debugger;
+  newMatch.targetSupply = parseFloat(`${ethers.utils.formatUnits(matchData[1], 0)}`);
+  newMatch.gradient = parseFloat(`${ethers.utils.formatUnits(matchData[3], 0)}`);
   newMatch.prize = parseFloat(`${ethers.utils.formatUnits(matchData[2], 18)}`);
-  debugger;
   newMatch.ended = matchData[4];
-  debugger;
   newMatch.numberOfSides = matchData[0];
 
   newMatch.sides = [{
@@ -59,15 +52,12 @@ export function* fetchMatch(index: number){
     balance: yield call(getBalanceOf, index, 1),
     totalSupply: yield call(getTotalSupply, index, 1),
   }]
-  debugger;
 
   yield put(setMatchAction(newMatch))
 }
 
 export function* fetchMatches(currentMatch: number){
-  debugger;
   for(let i = currentMatch; i > 0;  i--){
-    debugger;
     if(i != 0){
       yield fork(fetchMatch, i);
     }
@@ -86,7 +76,6 @@ export function* fetchMatchListener() {
 export function* fetchAllListener() {
   while (true) {
     yield take(captureTheBlockActions.fetchAllAction);
-    debugger;
     const index = yield call(matchIndex);
     yield fork(fetchMatches, parseInt(`${ethers.utils.formatUnits(index, 0)}`))
   }
@@ -96,17 +85,13 @@ export function* fetchAllListener() {
 export function* startMatchListener(){
   while(true){
     const {numberOfSides, targetSupply, gradient} = (yield take(captureTheBlockActions.startMatchAction.request)).payload;
-    debugger;
     try{
-      debugger;
       yield put(setTxContextAction(`Starting match`));
       yield put(setRemainingTxCountAction(1));
       const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
-      debugger;
       yield put(setRemainingTxCountAction(0));
       const temp = parseInt(ethers.utils.formatUnits(index, 0))
       yield fork(fetchMatch, temp);
-      debugger;
       yield put(captureTheBlockActions.startMatchAction.success())
     }
     catch(e){

@@ -74,7 +74,6 @@ export async function getApproval(){
 		return approvalBn.gt(0);
 	}
 	catch(e){
-		debugger;
 		console.log(e);
 		throw e;
 	}
