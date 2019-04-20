@@ -1,9 +1,9 @@
 import { eventChannel } from 'redux-saga';
 import { call, cancel, delay, fork, put, race, select, take, all } from 'redux-saga/effects';
 import * as authenticationActions from './actions';
-import { getMatch, priceToBuy, rewardForSell, getMatchSidePoolBalance, getBalanceOf, matchIndex } from './chainInteractions';
+import { getMatch, priceToBuy, rewardForSell, getMatchSidePoolBalance, getBalanceOf, matchIndex, startMatchTx, buyTokenTx, sellTokenTx, claimWinningsTx } from './chainInteractions';
 import { Match } from './types';
-import { setMatchAction } from './actions';
+import { setMatchAction, claimWinningsAction } from './actions';
 import { ethers } from 'ethers';
 
 export function* fetchMatch(index: number){
@@ -49,10 +49,8 @@ export function* fetchMatches(currentMatch: number){
 // Listeners
 export function* fetchMatchListener() {
   while (true) {
-    const index = yield take(authenticationActions.fetchMatchAction);
-
+    const index = (yield take(authenticationActions.fetchMatchAction)).payload;
     yield fork(fetchMatch, index);
-
   }
 }
 
@@ -71,30 +69,71 @@ export function* fetchAllListener() {
 
 export function* startMatchListener(){
   while(true){
-
+    const {numberOfSides, targetSupply, gradient} = (yield take(authenticationActions.startMatchAction.request)).payload;
+    try{
+      yield call(startMatchTx, numberOfSides, targetSupply, gradient);
+      const index = yield call(matchIndex);
+      yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
+      yield put(authenticationActions.startMatchAction.success())
+    }
+    catch(e){
+      yield put(authenticationActions.startMatchAction.failure(e))
+    }
   }
 }
 
 export function* buyTokenListener(){
   while(true){
-    
+    const side = (yield take(authenticationActions.buyTokenAction.request)).payload
+    try{
+      yield call(buyTokenTx, side);
+      const index = yield call(matchIndex);
+      yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
+      yield put(authenticationActions.buyTokenAction.success())
+    }
+    catch(e){
+      yield put(authenticationActions.buyTokenAction.failure(e))
+    }
   }
 }
 
 export function* sellTokenListener(){
   while(true){
-    
+    const side = (yield take(authenticationActions.sellTokenAction.request)).payload
+    try{
+      yield call(sellTokenTx, side);
+      const index = yield call(matchIndex);
+      yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
+      yield put(authenticationActions.sellTokenAction.success())
+    }
+    catch(e){
+      yield put(authenticationActions.sellTokenAction.failure(e))
+    }
   }
 }
 
 export function* ClaimWinningsListener(){
   while(true){
-    
+    const index = (yield take(authenticationActions.claimWinningsAction.request)).payload
+    try{
+      yield call(claimWinningsTx, index);
+
+      yield fork(fetchMatch, index);
+      yield put(authenticationActions.claimWinningsAction.success())
+    }
+    catch(e){
+      yield put(authenticationActions.claimWinningsAction.failure(e))
+    }
   }
 }
 
 export default function* rootCaptureTheBlockSaga() {
   yield fork(fetchAllListener);
+  yield fork(fetchMatchListener);
+  yield fork(startMatchListener);
+  yield fork(buyTokenListener);
+  yield fork(sellTokenListener);
+  yield fork(ClaimWinningsListener);
   while (true) {
   }
 }

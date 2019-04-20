@@ -7,7 +7,7 @@ export const startMatchAction = createAsyncAction(
   ActionTypes.START_MATCH_TX_REQUEST,
   ActionTypes.START_MATCH_TX_SUCCESS,
   ActionTypes.START_MATCH_TX_FAILURE)
-  <void, void, string>();
+  <{numberOfSides: number, targetSupply: number, gradient: number}, void, string>();
 
 export const buyTokenAction = createAsyncAction(
   ActionTypes.BUY_TX_REQUEST,
@@ -25,7 +25,7 @@ export const claimWinningsAction = createAsyncAction(
   ActionTypes.CLAIM_TX_REQUEST,
   ActionTypes.CLAIM_TX_SUCCESS,
   ActionTypes.CLAIM_TX_FAILURE)
-  <{index: number, side: number}, void, string>();
+  <number, void, string>();
 
 export const priceToBuyAction = createStandardAction(ActionTypes.PRICE_TO_BUY)<{index :number, side: number, price: number}>();
 export const priceToSellAction = createStandardAction(ActionTypes.PRICE_TO_SELL)<{index :number, side: number, price: number}>();
