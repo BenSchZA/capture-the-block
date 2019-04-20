@@ -97,7 +97,7 @@ export async function priceToBuy(index: number, side: number){
 }
 
 export async function rewardForSell(index: number, side: number){
-	try{
+	try {
 		const {provider, signer} = await getBlockchainObjects();
     const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
 		const daiPriceBN = await captureTheBlockContract.rewardForSell(index, side);
@@ -116,6 +116,19 @@ export async function getMatch(index: number){
 		const matchData = await captureTheBlockContract.getMatch(index);
 
 		return matchData;
+	}
+	catch(e){
+		throw e;
+	}
+}
+
+export async function getTotalSupply(index: number, side: number){
+	try{
+		const {provider, signer} = await getBlockchainObjects();
+    	const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
+		const totalSupply = await captureTheBlockContract.getSideTotalSupply(index, side);
+
+		return parseFloat(ethers.utils.formatUnits(totalSupply, 18));;
 	}
 	catch(e){
 		throw e;
@@ -153,7 +166,7 @@ export async function matchIndex(){
 		const {provider, signer} = await getBlockchainObjects();
 		const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(CaptureTheBlockAbi), provider)).connect(signer);
 		const matchIndexBN = await captureTheBlockContract.matchIndex();
-
+		console.log(parseInt(ethers.utils.formatUnits(matchIndexBN, 0)));
 		return parseInt(ethers.utils.formatUnits(matchIndexBN, 0));
 	}
 	catch(e){

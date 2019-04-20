@@ -120,6 +120,10 @@ contract CaptureTheBlockV1 {
         return matches[_index].side[_side].balances[_player];
     }
 
+    function getSideTotalSupply(uint256 _index, uint8 _side) public view returns(uint256){
+        return matches[_index].side[_side].totalSupply;
+    }
+
     function matchIndex() public view returns(uint256){
         return matchIndex_;
     }

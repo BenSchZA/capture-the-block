@@ -1,12 +1,25 @@
 import { eventChannel } from 'redux-saga';
 import { call, cancel, delay, fork, put, race, select, take, all } from 'redux-saga/effects';
-import * as authenticationActions from './actions';
-import { getMatch, priceToBuy, rewardForSell, getMatchSidePoolBalance, getBalanceOf, matchIndex, startMatchTx, buyTokenTx, sellTokenTx, claimWinningsTx } from './chainInteractions';
+import * as captureTheBlockActions from './actions';
+import { 
+  getMatch, 
+  priceToBuy, 
+  rewardForSell, 
+  getMatchSidePoolBalance, 
+  getBalanceOf, 
+  matchIndex, 
+  startMatchTx, 
+  buyTokenTx, 
+  sellTokenTx, 
+  claimWinningsTx, 
+  getTotalSupply
+} from './chainInteractions';
 import { Match } from './types';
 import { setMatchAction, claimWinningsAction } from './actions';
 import { ethers } from 'ethers';
 
 export function* fetchMatch(index: number){
+  if (index === 0) return;
   let newMatch: Match = {
     ended: false,
     numberOfSides: 2,
@@ -23,17 +36,20 @@ export function* fetchMatch(index: number){
   newMatch.prize = parseFloat(`${ethers.utils.formatUnits(matchData[2], 18)}`);
   newMatch.ended = matchData[4];
   newMatch.numberOfSides = matchData[0];
-  newMatch.sides[0].buyPrice = yield call(priceToBuy, index, 0);
-  newMatch.sides[1].buyPrice = yield call(priceToBuy, index, 1);
 
-  newMatch.sides[0].sellPrice = yield call(rewardForSell, index, 0);
-  newMatch.sides[1].sellPrice = yield call(rewardForSell, index, 1);
-
-  newMatch.sides[0].poolBalance = yield call(getMatchSidePoolBalance, index, 0);
-  newMatch.sides[1].poolBalance = yield call(getMatchSidePoolBalance, index, 1);
-
-  newMatch.sides[0].balance = yield call(getBalanceOf, index, 0);
-  newMatch.sides[1].balance = yield call(getBalanceOf, index, 1);
+  newMatch.sides = [{
+    buyPrice: yield call(priceToBuy, index, 0),
+    sellPrice: yield call(rewardForSell, index, 0),
+    poolBalance: yield call(getMatchSidePoolBalance, index, 0),
+    balance: yield call(getBalanceOf, index, 0),
+    totalSupply: yield call(getTotalSupply, index, 0),
+  }, {
+    buyPrice: yield call(priceToBuy, index, 1),
+    sellPrice: yield call(rewardForSell, index, 1),
+    poolBalance: yield call(getMatchSidePoolBalance, index, 1),
+    balance: yield call(getBalanceOf, index, 1),
+    totalSupply: yield call(getTotalSupply, index, 1),
+  }]
 
   yield put(setMatchAction(newMatch))
 }
@@ -49,14 +65,14 @@ export function* fetchMatches(currentMatch: number){
 // Listeners
 export function* fetchMatchListener() {
   while (true) {
-    const index = (yield take(authenticationActions.fetchMatchAction)).payload;
+    const index = (yield take(captureTheBlockActions.fetchMatchAction)).payload;
     yield fork(fetchMatch, index);
   }
 }
 
 export function* fetchAllListener() {
   while (true) {
-    yield take(authenticationActions.fetchAllAction);
+    yield take(captureTheBlockActions.fetchAllAction);
     // Get current match
     const index = yield call(matchIndex);
 
@@ -69,57 +85,57 @@ export function* fetchAllListener() {
 
 export function* startMatchListener(){
   while(true){
-    const {numberOfSides, targetSupply, gradient} = (yield take(authenticationActions.startMatchAction.request)).payload;
+    const {numberOfSides, targetSupply, gradient} = (yield take(captureTheBlockActions.startMatchAction.request)).payload;
     try{
       const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
-      yield put(authenticationActions.startMatchAction.success())
+      yield put(captureTheBlockActions.startMatchAction.success())
     }
     catch(e){
-      yield put(authenticationActions.startMatchAction.failure(e))
+      yield put(captureTheBlockActions.startMatchAction.failure(e))
     }
   }
 }
 
 export function* buyTokenListener(){
   while(true){
-    const side = (yield take(authenticationActions.buyTokenAction.request)).payload
+    const side = (yield take(captureTheBlockActions.buyTokenAction.request)).payload
     try{
       const index = yield call(buyTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
-      yield put(authenticationActions.buyTokenAction.success())
+      yield put(captureTheBlockActions.buyTokenAction.success())
     }
     catch(e){
-      yield put(authenticationActions.buyTokenAction.failure(e))
+      yield put(captureTheBlockActions.buyTokenAction.failure(e))
     }
   }
 }
 
 export function* sellTokenListener(){
   while(true){
-    const side = (yield take(authenticationActions.sellTokenAction.request)).payload
+    const side = (yield take(captureTheBlockActions.sellTokenAction.request)).payload
     try{
       const index = yield call(sellTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
-      yield put(authenticationActions.sellTokenAction.success())
+      yield put(captureTheBlockActions.sellTokenAction.success())
     }
     catch(e){
-      yield put(authenticationActions.sellTokenAction.failure(e))
+      yield put(captureTheBlockActions.sellTokenAction.failure(e))
     }
   }
 }
 
 export function* ClaimWinningsListener(){
   while(true){
-    const index = (yield take(authenticationActions.claimWinningsAction.request)).payload
+    const index = (yield take(captureTheBlockActions.claimWinningsAction.request)).payload
     try{
       yield call(claimWinningsTx, index);
 
       yield fork(fetchMatch, index);
-      yield put(authenticationActions.claimWinningsAction.success())
+      yield put(captureTheBlockActions.claimWinningsAction.success())
     }
     catch(e){
-      yield put(authenticationActions.claimWinningsAction.failure(e))
+      yield put(captureTheBlockActions.claimWinningsAction.failure(e))
     }
   }
 }
@@ -131,6 +147,4 @@ export default function* rootCaptureTheBlockSaga() {
   yield fork(buyTokenListener);
   yield fork(sellTokenListener);
   yield fork(ClaimWinningsListener);
-  while (true) {
-  }
 }

@@ -82,11 +82,11 @@ export async function initBlockchainResources() {
 
     if(chainId == 1){
       blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
-      blockchainResources.captureTheBlockContractAddress = `${process.env.MAINNET_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else if(chainId == 4){
       blockchainResources.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
-      blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else {
       throw "Invalid network"

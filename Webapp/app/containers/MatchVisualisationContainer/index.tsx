@@ -22,7 +22,9 @@ const MatchVisualisationContainer: React.SFC<Props> = (props: Props) => {
 };
 
 const mapStateToProps = (state: ApplicationRootState): StateProps => {
-  return {};
+  return {
+    ...state.captureTheBlock.match,
+  };
 }
 
 const withConnect = connect(

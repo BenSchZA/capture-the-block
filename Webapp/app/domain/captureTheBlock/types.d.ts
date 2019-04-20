@@ -2,7 +2,7 @@ import { ActionType } from 'typesafe-actions';
 import * as actions from './actions';
 import { ApplicationRootState } from 'types';
 
-export interface Side{
+export interface Side {
   buyPrice: number;
   sellPrice: number;
   balance: number;
@@ -10,7 +10,7 @@ export interface Side{
   totalSupply: number;
 }
 
-export interface Match{
+export interface Match {
   index: number;
   numberOfSides: number;
   sides: Side[];
@@ -25,6 +25,7 @@ export interface Match{
 interface CaptureTheBlockState {
   // gameStats: [key:number]: Game[]
   currentIndex: number;
+  match: Match;
 }
 
 
