@@ -96,7 +96,6 @@ const TransactionHistory: React.SFC<OwnProps> = (props: OwnProps) => {
       </Paper>
     </section>
   </Fragment>
-    ;
 };
 
 export default withStyles(styles, { withTheme: true })(TransactionHistory);

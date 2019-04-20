@@ -1,10 +1,20 @@
 // import { ContainerState, ContainerActions } from './types';
 import { getType } from 'typesafe-actions';
 import * as authenticationActions from './actions';
-import { DomainActions, DomainState } from './types';
+import { DomainActions, DomainState, Side } from './types';
 
 export const initialState: DomainState = {
   currentIndex: 0,
+  match: {
+    index: 0,
+    numberOfSides: 0,
+    sides: [],
+    winner: 0,
+    targetSupply: 0,
+    prize: 0,
+    gradient: 0,
+    ended: true,
+  }
 };
 
 function captureTheBlockReducer(state: DomainState = initialState, action: DomainActions) {

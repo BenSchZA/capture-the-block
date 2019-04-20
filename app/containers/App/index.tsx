@@ -57,15 +57,9 @@ const App: React.SFC<Props> = (props: Props) => {
   );
 };
 
-const mapStateToProps = state => selectApp(state);
-
-const mapDispatchToProps = (dispatch) => ({
-
-});
-
 const withConnect = connect(
-  mapStateToProps,
-  mapDispatchToProps,
+  null,
+  null,
 );
 
 const withSaga = injectSaga<OwnProps>({ key: 'global', saga: saga, mode: DAEMON });

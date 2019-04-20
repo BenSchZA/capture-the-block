@@ -3,6 +3,7 @@ import { call, cancel, delay, fork, put, race, select, take } from 'redux-saga/e
 import { ApplicationRootState } from 'types';
 import { forwardTo } from 'utils/history';
 import * as authenticationActions from './actions';
+import {fetchAllAction} from '../captureTheBlock/actions';
 import ActionTypes from './constants';
 import { refreshBalancesAction, setTxContextAction } from 'domain/transactionManagement/actions';
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
@@ -20,11 +21,9 @@ export function* checkDaiRequirements(ethAddres: string){
       yield put(setTxContextAction(`Approving Transfers to Game`));
       const approvedForAmount = yield call(approveTx);
     }
-    
-    
   }
   catch(e){
-
+    console.log(e);
   }
 }
 
@@ -34,6 +33,7 @@ export function* connectWallet() {
     try {
       yield put(authenticationActions.setEthAddress({ethAddress : signerAddress}));
       yield fork(checkDaiRequirements, signerAddress);
+      yield put(fetchAllAction());
       yield put(authenticationActions.connectWallet.success());
     } catch (error) {
       yield put(authenticationActions.connectWallet.failure(error.message));
@@ -78,15 +78,8 @@ export default function* rootAuthenticationSaga() {
     });
 
     if (success) {
-      // Cancel the task that we started
       yield cancel(connectWalletTask);
-
-      // Start the addressChange listener
       yield fork(addressChangeListener);
-
-      // Check store for existing signed message
-
-      // Wait till we receive a logout event
       yield take(ActionTypes.LOG_OUT);
       localStorage.clear();
     } else {

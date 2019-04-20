@@ -81,14 +81,12 @@ export default class Scene extends Phaser.Scene {
   }
 
   simulateBlockTime(player) {
-    console.log(`New block`);
     const coords = this.getPositionLeft(0.1*this.currentBlock);
 
     player.x = coords.x;
     player.y = coords.y;
 
     this.currentBlock++;
-    console.log(coords);
   }
 
   preload() {
@@ -104,8 +102,6 @@ export default class Scene extends Phaser.Scene {
   player4;
 
   create() {
-    console.log(this);
-
     const map = this.make.tilemap({ key: 'map' });
     const tileset = map.addTilesetImage('kenney');
     const layer = map.createStaticLayer(0, tileset, 0, 0);
@@ -161,7 +157,6 @@ export default class Scene extends Phaser.Scene {
   lastUpdateTime = 0;
 
   update(time, delta) {
-    console.log(time - this.lastUpdateTime);
     if(time - this.lastUpdateTime > 5000) {
       // this.movePlayerLeft(this.player1, 0.1);
       // this.movePlayerLeft(this.player2, 0.5);
