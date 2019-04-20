@@ -5,15 +5,10 @@ enum Side {
   RIGHT
 }
 
-enum PlayerType {
-  ME,
-  PARTICIPANT
-}
-
 interface Player {
   side: Side,
-  type: PlayerType,
   progress: Number,
+  sprite: any,
 }
 
 export default class Scene extends Phaser.Scene {
@@ -29,9 +24,9 @@ export default class Scene extends Phaser.Scene {
   end_y = 255;
 
   start_x2 = 1335;
-  start_y2 = 680;
+  start_y2 = 680-45;
   end_x2 = 890;
-  end_y2 = 255;
+  end_y2 = 255-45;
 
   currentBlock = 0;
 
@@ -55,21 +50,21 @@ export default class Scene extends Phaser.Scene {
     return {x: x_prog, y: y_prog};
   }
 
-  createPlayer(who, side) {
+  createPlayer(side) {
     let player;
 
-    let type = who === PlayerType.ME ? PlayerType.ME.toString() : PlayerType.PARTICIPANT.toString();
-
     if(side === Side.LEFT) {
-      player = this.createContext.physics.add.image(this.start_x, this.start_y, type);
+      player = this.createContext.physics.add.image(this.start_x, this.start_y, Side.LEFT.toString());
+      this.playerLeft = player;
     } else {
-      player = this.createContext.physics.add.image(this.start_x2, this.start_y2, type);
+      player = this.createContext.physics.add.image(this.start_x2, this.start_y2, Side.RIGHT.toString());
+      this.playerRight = player;
     }
 
-    if(who === PlayerType.ME) {
-      this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-      this.createContext.cameras.main.startFollow(player);
-    }
+    // if(who === PlayerType.ME) {
+    //   this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+    //   this.createContext.cameras.main.startFollow(player);
+    // }
     
     player.setMaxVelocity(300, 400).setFriction(800, 0);
     player.body.accelGround = 1200;
@@ -98,8 +93,8 @@ export default class Scene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON('map', 'impact-tilemap.json');
     this.load.image('kenney', 'kenney.png');
-    this.load.image(PlayerType.PARTICIPANT.toString(), 'rick.png');
-    this.load.image(PlayerType.ME.toString(), 'sonic.png');
+    this.load.image(Side.LEFT.toString(), 'sonic.png');
+    this.load.image(Side.RIGHT.toString(), 'rick.png');
   }
 
   newPlayer;
@@ -107,6 +102,8 @@ export default class Scene extends Phaser.Scene {
 
   create() {
     this.createContext = this;
+    this.createPlayer.bind(this);
+    this.createPlayer.bind(this);
 
     this.map = this.make.tilemap({ key: 'map' });
     const tileset = this.map.addTilesetImage('kenney');
@@ -137,8 +134,8 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move.', {
-        fontSize: '18px',
+    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move,\nand try to caputure the flag first!', {
+        fontSize: '24px',
         fill: '#ffffff'
     });
     help.setScrollFactor(0);
@@ -146,20 +143,39 @@ export default class Scene extends Phaser.Scene {
 
   lastUpdateTime = 0;
 
-  players: Array<Player> = [];
-  setPlayers(players: Array<Player>) {
-    this.players = players;
+  playerLeft = {
+    side: Side.LEFT,
+    progress: 0,
+    sprite: null,
+  } as Player;
+  playerRight = {
+    side: Side.RIGHT,
+    progress: 0,
+    sprite: null,
+  } as Player;
+
+  setProgress(side, progress) {
+    if(side === Side.LEFT) {
+      this.playerLeft.progress = progress;
+    } else {
+      this.playerRight.progress = progress;
+    }
   }
 
   update(time, delta) {
-    if(time - this.lastUpdateTime > 10000) {
-      this.players.forEach((player) => {
-        if(player.side === Side.LEFT) {
-          this.movePlayerLeft(this.createPlayer.bind(this.createContext)(player.type, player.side), player.progress);
-        } else {
-          this.movePlayerRight(this.createPlayer.bind(this.createContext)(player.type, player.side), player.progress);
-        }
-      });
+    if(time - this.lastUpdateTime > 500) {
+      if(!this.playerLeft.sprite) {
+        this.playerLeft.sprite = this.createPlayer.bind(this.createContext)(Side.LEFT);
+      }
+      if(!this.playerRight.sprite) {
+        this.playerRight.sprite = this.createPlayer.bind(this.createContext)(Side.RIGHT);
+      }
+
+      if(this.playerLeft.sprite && this.playerRight.sprite) {
+        this.movePlayerLeft(this.playerLeft.sprite, this.playerLeft.progress);
+        this.movePlayerLeft(this.playerRight.sprite, this.playerRight.progress);
+      }
+
       this.lastUpdateTime = time;
     }
   }
