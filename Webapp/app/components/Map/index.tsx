@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/styles';
 import Phaser from 'phaser';
 import Scene from './scene';
+import { Button } from '@material-ui/core';
 
 const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => createStyles({
 
@@ -16,15 +17,10 @@ enum Side {
   RIGHT
 }
 
-enum PlayerType {
-  ME,
-  PARTICIPANT
-}
-
 interface Player {
   side: Side,
-  type: PlayerType,
   progress: Number,
+  sprite: any,
 }
 
 class Map extends React.Component<Props> {
@@ -39,9 +35,11 @@ class Map extends React.Component<Props> {
   scene;
 
   populatePhaserMap() {
+    this.scene = new Scene({});
+
     const config = {
       type: Phaser.CANVAS,
-      // mode: Phaser.Scale.FIT,
+      mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
       // min: {
       //   width: 800,
       //   height: 600
@@ -50,24 +48,42 @@ class Map extends React.Component<Props> {
       //   width: 1600,
       //   height: 1200
       // },
-      width: 1600,
-      height: 1200,
-      backgroundColor: '#2d2d2d',
+      width: '100%',
+      // height: '',
+      backgroundColor: '#00b5bd',
       parent: 'phaser-div',
       pixelArt: true,
       physics: {
-        default: 'impact',
-        impact: { gravity: 200 }, //{x: 0, y: 50}
+        default: 'arcade',
+        physics: { gravity: {x: 0, y: 200} }, //{x: 0, y: 50}
+        impact: { gravity: 200 },
       },
-      scene: [Scene]
+      scene: [this.scene]
     };
-
+    
     this.game = new Phaser.Game(config);
-    console.log(this.game);
   }
 
   componentDidMount() {
     this.populatePhaserMap();
+
+    let progress = 0;
+    let direction = true;
+    
+    setInterval(() => {
+      this.scene.setProgress(Side.LEFT, progress);
+      this.scene.setProgress(Side.RIGHT, progress);
+      if(direction) {
+        progress = progress + 0.1;
+      } else {
+        progress = progress - 0.1;
+      }
+      if(progress >= 0.9) direction = false;
+      if(progress <= 0.1) direction = true;
+      console.log(progress);
+    }, 5000);
+    // this.scene.setProgress(Side.LEFT, 0.5);
+    // this.scene.setProgress(Side.RIGHT, 1);
   }
 
   shouldComponentUpdate() {
@@ -76,6 +92,7 @@ class Map extends React.Component<Props> {
 
   public render() {
     const {} = this.props;
+
     return (
       <Fragment>
         <div id="phaser-div"></div>
