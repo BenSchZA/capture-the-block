@@ -39,55 +39,50 @@ class Map extends React.Component<Props> {
   scene;
 
   populatePhaserMap() {
-    let scene = new Scene({});
+    this.scene = new Scene({});
 
     const config = {
       type: Phaser.CANVAS,
       mode: Phaser.Scale.FIT,
-      min: {
-        width: 800,
-        height: 600
-      },
-      max: {
-        width: 1600,
-        height: 1200
-      },
-      // width: 1600,
-      // height: 1200,
-      backgroundColor: '#2d2d2d',
+      // min: {
+      //   width: 800,
+      //   height: 600
+      // },
+      // max: {
+      //   width: 1600,
+      //   height: 1200
+      // },
+      width: '100%',
+      height: '100%',
+      backgroundColor: '#00b5bd',
       parent: 'phaser-div',
       pixelArt: true,
       physics: {
         default: 'arcade',
-        physics: { gravity: {x: 0, y: 50} }, //{x: 0, y: 50}
-        impact: { gravity: 50 },
+        physics: { gravity: {x: 0, y: 200} }, //{x: 0, y: 50}
+        impact: { gravity: 200 },
       },
-      scene: [scene]
+      scene: [this.scene]
     };
     
     this.game = new Phaser.Game(config);
-
-    scene.setPlayers([
-      {
-        side: Side.LEFT,
-        type: PlayerType.ME,
-        progress: 0.9,
-      },
-      {
-        side: Side.RIGHT,
-        type: PlayerType.PARTICIPANT,
-        progress: 0.2,
-      },
-      // {
-      //   side: Side.RIGHT,
-      //   type: PlayerType.PARTICIPANT,
-      //   progress: 0.5,
-      // }
-    ]);
   }
 
   componentDidMount() {
     this.populatePhaserMap();
+
+    this.scene.setPlayers([
+      {
+        side: Side.LEFT,
+        type: PlayerType.ME,
+        progress: 0,
+      },
+      {
+        side: Side.RIGHT,
+        type: PlayerType.PARTICIPANT,
+        progress: 0,
+      },
+    ]);
   }
 
   shouldComponentUpdate() {
@@ -96,6 +91,7 @@ class Map extends React.Component<Props> {
 
   public render() {
     const {} = this.props;
+
     return (
       <Fragment>
         <div id="phaser-div"></div>
