@@ -71,8 +71,7 @@ export function* startMatchListener(){
   while(true){
     const {numberOfSides, targetSupply, gradient} = (yield take(authenticationActions.startMatchAction.request)).payload;
     try{
-      yield call(startMatchTx, numberOfSides, targetSupply, gradient);
-      const index = yield call(matchIndex);
+      const index = yield call(startMatchTx, numberOfSides, targetSupply, gradient);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(authenticationActions.startMatchAction.success())
     }
@@ -86,8 +85,7 @@ export function* buyTokenListener(){
   while(true){
     const side = (yield take(authenticationActions.buyTokenAction.request)).payload
     try{
-      yield call(buyTokenTx, side);
-      const index = yield call(matchIndex);
+      const index = yield call(buyTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(authenticationActions.buyTokenAction.success())
     }
@@ -101,8 +99,7 @@ export function* sellTokenListener(){
   while(true){
     const side = (yield take(authenticationActions.sellTokenAction.request)).payload
     try{
-      yield call(sellTokenTx, side);
-      const index = yield call(matchIndex);
+      const index = yield call(sellTokenTx, side);
       yield fork(fetchMatch, parseInt(ethers.utils.formatUnits(index, 0)));
       yield put(authenticationActions.sellTokenAction.success())
     }
