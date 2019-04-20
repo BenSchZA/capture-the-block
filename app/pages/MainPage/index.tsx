@@ -20,14 +20,14 @@ const MainPage: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
   return (
     <Fragment>
       <Grid container>
-        <Grid item xs={8}>
+        <Grid item xs={6}>
           <Grid container>
             <Grid item xs={12}><MatchVisualisationContainer /></Grid>
             <Grid item xs={6}><BuySellContainer /></Grid>
             <Grid item xs={6}><BuySellContainer /></Grid>
           </Grid>
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TransactionHistoryContainer />
         </Grid>
       </Grid>
