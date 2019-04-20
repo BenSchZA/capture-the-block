@@ -5,8 +5,8 @@ import { DomainActions, DomainState } from './types';
 
 export const initialState: DomainState = {
   walletUnlocked: false,
-  ethAddress: '',
   errorMessage: '',
+  ethAddress: '',
 };
 
 function authenticationReducer(state: DomainState = initialState, action: DomainActions) {

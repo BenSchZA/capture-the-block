@@ -7,23 +7,11 @@ import ActionTypes from './constants';
 import { refreshBalancesAction } from 'domain/transactionManagement/actions';
 import { getBlockchainObjects, signMessage } from 'blockchainResources';
 
-export function* loginFlow() {
-  while (yield take(ActionTypes.AUTH_REQUEST)) {
-    try {
-      const {signerAddress} = yield call(getBlockchainObjects);
-      yield put(refreshBalancesAction());
-      yield call(forwardTo, '/dashboard'); // TODO: have this only redirect when on log in
-    } catch (error) {
-      console.log(error);
-    }
-  }
-}
-
 export function* connectWallet() {
-  const {ethAddress, provider } = yield call(getBlockchainObjects);
+  const {signerAddress, provider } = yield call(getBlockchainObjects);
   if (provider) {
     try {
-      yield put(authenticationActions.setEthAddress({ethAddress : ethAddress}));
+      yield put(authenticationActions.setEthAddress({ethAddress : signerAddress}));
       yield put(authenticationActions.connectWallet.success());
     } catch (error) {
       yield put(authenticationActions.connectWallet.failure(error.message));
@@ -37,8 +25,8 @@ export function* connectWallet() {
 export const addressChangeEventChannel = eventChannel(emit => {
   try{
     const { ethereum } = window as any;
-    ethereum.on('accountsChanged', () => {
-      emit('Wallet Address changed');
+    ethereum.on('accountsChanged', (e: Array<string>) => {
+      emit(e[0]);
     });
   }
   catch(e){

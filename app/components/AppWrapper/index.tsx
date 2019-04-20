@@ -19,7 +19,24 @@ import { NavLink, Link } from 'react-router-dom';
 import NetworkState from 'components/NetworkState';
 
 const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => createStyles({
-
+  root: {
+    display: 'flex',
+    backgroundColor: '#00b5bd',
+  },
+  appBar: {
+    zIndex: zIndex.drawer + 1,
+    background: '#01223b',
+  },
+  appHeading: {
+    flexGrow: 1,
+    textAlign: 'center',
+    color: 'white',
+  },
+  content: {
+    flexGrow: 1,
+    minHeight: '100vh',
+    padding: `${spacing.unit * 9}px ${spacing.unit * 3}px ${spacing.unit * 3}px`,
+  },
 });
 
 interface Props extends WithStyles<typeof styles> {
@@ -44,32 +61,16 @@ class AppWrapper extends React.Component<Props> {
   public render() {
     const { networkId, networkReady, classes, children, ethAddress } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         <Fragment>
-          <AppBar
-            position="fixed">
+          <AppBar position="fixed" className={classes.appBar}>
             <Toolbar disableGutters={true}>
-              {
-                this.state.open ?
-                  <IconButton
-                    color="inherit"
-                    aria-label="Close drawer"
-                    onClick={this.handleDrawerToggle} >
-                    <ChevronLeftIcon />
-                  </IconButton> :
-                  <IconButton
-                    color="inherit"
-                    aria-label="Open drawer"
-                    onClick={this.handleDrawerToggle} >
-                    <MenuIcon />
-                  </IconButton>
-              }
-              <Typography>Capture the Block</Typography>
-              <Typography>{ethAddress}</Typography>
+              <Typography className={classes.appHeading}>Capture the Block</Typography>
+              <Typography className={classes.appHeading}>{ethAddress}</Typography>
             </Toolbar>
           </AppBar>
         </Fragment>
-        <main>
+        <main className={classes.content}>
           {children}
         </main>
         <NetworkState networkId={networkId} ready={networkReady}></NetworkState>
