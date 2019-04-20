@@ -137,7 +137,7 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move,\nand try to caputure the flag first!', {
+    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move,\nand try to capture the flag first!', {
         fontSize: '24px',
         fill: '#ffffff'
     });

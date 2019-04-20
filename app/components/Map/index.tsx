@@ -68,14 +68,22 @@ class Map extends React.Component<Props> {
     this.populatePhaserMap();
 
     let progress = 0;
+    let direction = true;
     
-    // setTimeout(() => {
-    //   this.scene.setProgress(Side.LEFT, progress);
-    //   this.scene.setProgress(Side.RIGHT, progress);
-    //   progress = progress + 0.1;
-    // }, 5000);
-    this.scene.setProgress(Side.LEFT, 0.5);
-    this.scene.setProgress(Side.RIGHT, 1);
+    setInterval(() => {
+      this.scene.setProgress(Side.LEFT, progress);
+      this.scene.setProgress(Side.RIGHT, progress);
+      if(direction) {
+        progress = progress + 0.1;
+      } else {
+        progress = progress - 0.1;
+      }
+      if(progress >= 0.9) direction = false;
+      if(progress <= 0.1) direction = true;
+      console.log(progress);
+    }, 5000);
+    // this.scene.setProgress(Side.LEFT, 0.5);
+    // this.scene.setProgress(Side.RIGHT, 1);
   }
 
   shouldComponentUpdate() {
