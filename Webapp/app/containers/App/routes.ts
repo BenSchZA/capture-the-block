@@ -1,4 +1,4 @@
-import CaptureTheBlockContainer from 'containers/CaptureTheBlockContainer';
+import MainPage from 'pages/MainPage';
 
 export interface appRoute {
   name: string;
@@ -9,7 +9,7 @@ export interface appRoute {
 const routes: appRoute[] = [{
     name: 'Capture the Block',
     path: '/',
-    component: CaptureTheBlockContainer
+    component: MainPage
   }
 ];
 

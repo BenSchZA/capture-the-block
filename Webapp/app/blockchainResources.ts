@@ -9,8 +9,8 @@ export interface BlockchainResources{
   networkId: number,
   daiAddress: string,
   captureTheBlockContractAddress: string,
-  signer: JsonRpcSigner | undefined,
-  provider: Web3Provider | undefined,
+  signer: JsonRpcSigner,
+  provider: Web3Provider,
   signerAddress: string,
   ethereum: any,
   isStatus: boolean,
@@ -26,13 +26,14 @@ export let blockchainResources: BlockchainResources = {
   networkId: 0,
   daiAddress: "0x",
   captureTheBlockContractAddress: "0x",
-  signer: undefined,
+  // @ts-ignore
+  signer: null,
   signerAddress: "",
   isCipher: false,
   isMetaMask: false,
   isStatus: false,
   isToshi: false,
-  provider: undefined,
+  // provider: undefined,
   ethereum: undefined,
 };
 
@@ -110,15 +111,9 @@ export async function resetBlockchainObjects(){
     approvedNetwork: false,
     networkId: 0,
     daiAddress: "0x",
-    captureTheBlockContractAddress: "0x",
+    commmunityFactoryAddress: "0x",
+    // @ts-ignore
     signer: undefined,
-    provider: undefined,
-    ethereum: undefined,
-    signerAddress: '0x',
-    isStatus: false,
-    isCipher: false,
-    isMetaMask: false,
-    isToshi: false,
   };
 }
 
@@ -139,7 +134,7 @@ export async function signMessage(message: string){
 
 export async function getBlockchainObjects(): Promise<BlockchainResources>{
   try{
-    if(blockchainResources.daiAddress == "0x"){
+    if (blockchainResources.daiAddress == "0x") {
       await initBlockchainResources();
     } else {
       const newData = fetchFromWindow();

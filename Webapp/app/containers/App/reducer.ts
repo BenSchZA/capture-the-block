@@ -7,6 +7,7 @@ import ActionTypes  from './constants';
  */
 
 export const initialState = {
+  //TODO Add rest of app state here
 };
 
 function appReducer(state = initialState, action) {
