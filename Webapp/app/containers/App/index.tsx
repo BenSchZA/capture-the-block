@@ -70,8 +70,6 @@ const App: React.SFC<Props> = ({
   startMatch,
   claimWinningsAction
    }: Props) => {
-     console.log(ended);
-     console.log(sides[winner].balance > 0);
   return (
     <AppWrapper
       ethAddress={blockchainResources.signerAddress}
