@@ -69,12 +69,15 @@ export default class Scene extends Phaser.Scene {
     if(who === PlayerType.ME) {
       this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
       this.createContext.cameras.main.startFollow(player);
+    } else {
+      player.body.setSize(60, 89, 0, 41); 
     }
     
     player.setMaxVelocity(300, 400).setFriction(800, 0);
     player.body.accelGround = 1200;
     player.body.accelAir = 600;
     player.body.jumpSpeed = 300;
+
     return player;
   }
 
@@ -97,7 +100,7 @@ export default class Scene extends Phaser.Scene {
   preload() {
     this.load.tilemapTiledJSON('map', 'impact-tilemap.json');
     this.load.image('kenney', 'kenney.png');
-    this.load.image(PlayerType.PARTICIPANT.toString(), 'phaser-dude.png');
+    this.load.image(PlayerType.PARTICIPANT.toString(), 'rick.png');
     this.load.image(PlayerType.ME.toString(), 'sonic.png');
   }
 
@@ -110,8 +113,6 @@ export default class Scene extends Phaser.Scene {
     this.map = this.make.tilemap({ key: 'map' });
     const tileset = this.map.addTilesetImage('kenney');
     const layer = this.map.createStaticLayer(0, tileset, 0, 0);
-
-    // this.repeat(delay, repeatCount, callback, callbackContext, arguments)
  
     // Any tile with the collides property set to true (in Tiled) will be set to collide
     layer.setCollisionByProperty({ collides: true });
