@@ -20,7 +20,6 @@ enum Side {
 interface Player {
   side: Side,
   progress: Number,
-  sprite: any,
 }
 
 class Map extends React.Component<Props> {
@@ -67,31 +66,39 @@ class Map extends React.Component<Props> {
   componentDidMount() {
     this.populatePhaserMap();
 
-    let progress = 0;
-    let direction = true;
+    // let progress = 0;
+    // let direction = true;
     
-    setInterval(() => {
-      this.scene.setProgress(Side.LEFT, progress);
-      this.scene.setProgress(Side.RIGHT, progress);
-      if(direction) {
-        progress = progress + 0.1;
-      } else {
-        progress = progress - 0.1;
-      }
-      if(progress >= 0.9) direction = false;
-      if(progress <= 0.1) direction = true;
-      console.log(progress);
-    }, 5000);
+    // setInterval(() => {
+    //   this.scene.setProgress(Side.LEFT, progress);
+    //   this.scene.setProgress(Side.RIGHT, progress);
+    //   if(direction) {
+    //     progress = progress + 0.1;
+    //   } else {
+    //     progress = progress - 0.1;
+    //   }
+    //   if(progress >= 0.9) direction = false;
+    //   if(progress <= 0.1) direction = true;
+    //   console.log(progress);
+    // }, 5000);
     // this.scene.setProgress(Side.LEFT, 0.5);
     // this.scene.setProgress(Side.RIGHT, 1);
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.players !== this.props.players) {
+      this.props.players.forEach((player) => {
+        this.scene.setProgress(player.side, player.progress);
+      });
+    }
+  }
+
   shouldComponentUpdate() {
-    return false;
+    return true;
   }
 
   public render() {
-    const {} = this.props;
+    const {players} = this.props;
 
     return (
       <Fragment>

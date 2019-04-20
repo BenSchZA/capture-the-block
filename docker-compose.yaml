@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+  webapp:
+    image: capturetheblock
+    build:
+      context: .
+      dockerfile: ./Webapp/Dockerfile
+      args:
+        - NODE_OPTIONS=--max-old-space-size=4096
+    ports:
+      - 3000:80

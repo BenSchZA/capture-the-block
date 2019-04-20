@@ -70,10 +70,11 @@ const App: React.SFC<Props> = ({
       networkReady={true}
       networkId={blockchainResources.networkId} >
       <TxLoadingModal pendingTx={txPending} txRemaining={txRemaining} txContext={txContext}></TxLoadingModal>
-      {ended ?
+      <Route path='/' exact component={MainPage} />
+      {/* {ended ?
         <Button onClick={startMatch}>Start Match</Button> :
         <Route path='/' exact component={MainPage} />
-      }
+      } */}
     </AppWrapper>
   );
 };

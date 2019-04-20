@@ -14,8 +14,20 @@ interface OwnProps extends WithStyles<typeof styles> {
 
 }
 
+enum Side {
+  LEFT,
+  RIGHT
+}
+
+interface Player {
+  side: Side,
+  progress: Number,
+}
+
 const MainPage: React.FunctionComponent<OwnProps> = (props: OwnProps) =>{
   const { classes } = props;
+
+  const players: Array<Player> = [];
 
   return (
     <Fragment>
