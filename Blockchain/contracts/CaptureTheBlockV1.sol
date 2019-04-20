@@ -51,39 +51,37 @@ contract CaptureTheBlockV1 {
         return true;
     }
 
-    function purchaseToken(uint256 _index, uint8 _side) public returns(bool){
-        require(!matches[_index].ended, "Match ended");
-        require(_side < matches[_index].numberOfSides, "Invalid Team");
-        uint256 daiValue = priceToBuy(_index, _side);
+    function purchaseToken(uint8 _side) public returns(bool){
+        require(_side < matches[matchIndex_].numberOfSides, "Invalid Team");
+        uint256 daiValue = priceToBuy(matchIndex_, _side);
         require(IERC20(collateralAddress_).transferFrom(msg.sender, address(this), daiValue), "Transfer failed");
-        matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.add(daiValue);
-        matches[_index].prize = matches[_index].prize.add(daiValue);
-        matches[_index].side[_side].balances[msg.sender] = matches[_index].side[_side].balances[msg.sender] + 1;
-        matches[_index].side[_side].totalSupply = matches[_index].side[_side].totalSupply + 1;
-        emit TokenPuchased(_index, msg.sender, daiValue);
+        matches[matchIndex_].side[_side].poolBalance = matches[matchIndex_].side[_side].poolBalance.add(daiValue);
+        matches[matchIndex_].prize = matches[matchIndex_].prize.add(daiValue);
+        matches[matchIndex_].side[_side].balances[msg.sender] = matches[matchIndex_].side[_side].balances[msg.sender] + 1;
+        matches[matchIndex_].side[_side].totalSupply = matches[matchIndex_].side[_side].totalSupply + 1;
+        emit TokenPuchased(matchIndex_, msg.sender, daiValue);
 
-        if(matches[_index].side[_side].totalSupply == matches[_index].targetSupply){
+        if(matches[matchIndex_].side[_side].totalSupply == matches[matchIndex_].targetSupply){
             // End match
-            matches[_index].winner = _side;
-            matches[_index].ended = true;
-            emit MatchEnded(_index, _side);
+            matches[matchIndex_].winner = _side;
+            matches[matchIndex_].ended = true;
+            emit MatchEnded(matchIndex_, _side);
         }
         return true;
     }
 
-    function sellToken(uint256 _index, uint8 _side) public returns(bool){
-        require(!matches[_index].ended, "Match ended");
-        require(_side < matches[_index].numberOfSides, "Invalid Team");
-        require(matches[_index].side[_side].balances[msg.sender] > 0, "User has no tokens remaining");
-        uint256 daiValue = rewardForSell(_index, _side);
+    function sellToken(uint8 _side) public returns(bool){
+        require(_side < matches[matchIndex_].numberOfSides, "Invalid Team");
+        require(matches[matchIndex_].side[_side].balances[msg.sender] > 0, "User has no tokens remaining");
+        uint256 daiValue = rewardForSell(matchIndex_, _side);
 
-        matches[_index].side[_side].balances[msg.sender] = matches[_index].side[_side].balances[msg.sender] - 1;
-        matches[_index].side[_side].totalSupply = matches[_index].side[_side].totalSupply - 1;
-        matches[_index].side[_side].poolBalance = matches[_index].side[_side].poolBalance.sub(daiValue);
+        matches[matchIndex_].side[_side].balances[msg.sender] = matches[matchIndex_].side[_side].balances[msg.sender] - 1;
+        matches[matchIndex_].side[_side].totalSupply = matches[matchIndex_].side[_side].totalSupply - 1;
+        matches[matchIndex_].side[_side].poolBalance = matches[matchIndex_].side[_side].poolBalance.sub(daiValue);
 
-        matches[_index].prize = matches[_index].prize.sub(daiValue);
+        matches[matchIndex_].prize = matches[matchIndex_].prize.sub(daiValue);
         require(IERC20(collateralAddress_).transfer(msg.sender, daiValue), "Transfer failed");
-        emit TokenSold(_index, msg.sender, daiValue);
+        emit TokenSold(matchIndex_, msg.sender, daiValue);
         return true;
     }  
 
