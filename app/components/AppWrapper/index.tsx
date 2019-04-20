@@ -26,7 +26,6 @@ interface Props extends WithStyles<typeof styles> {
   networkId: number,
   networkReady: boolean,
   ethAddress: string,
-  navLinks: Array<appRoute>,
 }
 
 class AppWrapper extends React.Component<Props> {
@@ -43,7 +42,7 @@ class AppWrapper extends React.Component<Props> {
   };
 
   public render() {
-    const { networkId, networkReady, classes, children, navLinks, ethAddress } = this.props;
+    const { networkId, networkReady, classes, children, ethAddress } = this.props;
     return (
       <div>
         <Fragment>
@@ -69,27 +68,6 @@ class AppWrapper extends React.Component<Props> {
               <Typography>{ethAddress}</Typography>
             </Toolbar>
           </AppBar>
-          <ClickAwayListener onClickAway={this.close}>
-            <Drawer
-              variant="persistent"
-              anchor="left"
-              open={this.state.open} >
-              <List>
-                {
-                  navLinks.map(({ name, path }) => (
-                    <NavLink onClick={this.close} to={path} key={name}>
-                      <ListItem button>
-                        <ListItemText primaryTypographyProps={{ color: "inherit" }} color="inherit" primary={name} />
-                      </ListItem>
-                    </NavLink>
-                  ))
-                }
-                <ListItem button onClick={() => { this.close() }}>
-                  <ListItemText primaryTypographyProps={{ color: "inherit" }} color="inherit" primary={'Logout'} />
-                </ListItem>
-              </List>
-            </Drawer>
-          </ClickAwayListener>
         </Fragment>
         <main>
           {children}

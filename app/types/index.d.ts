@@ -2,7 +2,7 @@ import { Reducer, Store } from 'redux';
 import { ContainerState as GlobalState } from '../containers/App/types';
 import { DomainState as AuthenticationState } from '../domain/authentication/types';
 import { DomainState as TransactionManagementState} from '../domain/transactionManagement/types';
-import { ContainerState as DashboardState } from '../containers/DashboardContainer/types';
+import { ContainerState as DashboardState } from '../containers/CaptureTheBlockContainer/types';
 
 export interface LifeStore extends Store<{}> {
   injectedReducers?: any;

@@ -1,12 +1,14 @@
 import { Web3Provider, JsonRpcSigner } from "ethers/providers";
 import { ethers } from "ethers";
 
+import {abi as captureTheBlockContractABI} from '../../Blockchain/build/CaptureTheBlockV1.json';
+
 export interface BlockchainResources{
   publishedBlock: number,
   approvedNetwork: boolean,
   networkId: number,
   daiAddress: string,
-  commmunityFactoryAddress: string,
+  captureTheBlockContractAddress: string,
   signer: JsonRpcSigner | undefined,
   provider: Web3Provider | undefined,
   signerAddress: string,
@@ -23,7 +25,7 @@ export let blockchainResources: BlockchainResources = {
   approvedNetwork: false,
   networkId: 0,
   daiAddress: "0x",
-  commmunityFactoryAddress: "0x",
+  captureTheBlockContractAddress: "0x",
   signer: undefined,
   signerAddress: "",
   isCipher: false,
@@ -57,18 +59,19 @@ export async function initBlockchainResources() {
       if(accountArray.code && accountArray.code == 4001){
         throw("Connection rejected");
       }
-    }else if(blockchainResources.isToshi){
+    } else if (blockchainResources.isToshi) {
       // Unlocked already
-    }else if(blockchainResources.isCipher){
+    } else if (blockchainResources.isCipher) {
 
-    }else {
-      if(ethereum){
+    } else {
+      if (ethereum){
         blockchainResources.isStatus = !!ethereum.isStatus;
-        if(isStatus){
+        if (isStatus) {
           await ethereum.enable();
         }
       }
     }
+
     blockchainResources.provider = await new ethers.providers.Web3Provider(web3.currentProvider);
     // @ts-ignore
     await blockchainResources.provider.ready;
@@ -80,19 +83,19 @@ export async function initBlockchainResources() {
 
     if(chainId == 1){
       blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
-      blockchainResources.commmunityFactoryAddress = `${process.env.MAINNET_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.MAINNET_COMMUNITY_FACTORY_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else if(chainId == 4){
       blockchainResources.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
-      blockchainResources.commmunityFactoryAddress = `${process.env.RINKEBY_COMMUNITY_FACTORY_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_COMMUNITY_FACTORY_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
-    }else {
+    } else {
       throw "Invalid network"
     }
 
-    // const communityFactory = (await new ethers.Contract(`${blockchainResources.commmunityFactoryAddress}`, JSON.stringify(CommunityFactoryABI), blockchainResources.provider)).connect(blockchainResources.signer);
+    // const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(captureTheBlockContractABI), blockchainResources.provider)).connect(blockchainResources.signer);
 
-    // const publishedBlock = parseInt(ethers.utils.formatUnits(await communityFactory.publishedBlocknumber(), 0));
+    // const publishedBlock = parseInt(ethers.utils.formatUnits(await captureTheBlockContract.publishedBlocknumber(), 0));
 
     // blockchainResources.publishedBlock = publishedBlock;
   }
@@ -107,7 +110,7 @@ export async function resetBlockchainObjects(){
     approvedNetwork: false,
     networkId: 0,
     daiAddress: "0x",
-    commmunityFactoryAddress: "0x",
+    captureTheBlockContractAddress: "0x",
     signer: undefined,
     provider: undefined,
     ethereum: undefined,
@@ -138,7 +141,7 @@ export async function getBlockchainObjects(): Promise<BlockchainResources>{
   try{
     if(blockchainResources.daiAddress == "0x"){
       await initBlockchainResources();
-    }else{
+    } else {
       const newData = fetchFromWindow();
       blockchainResources = {
         ...blockchainResources,

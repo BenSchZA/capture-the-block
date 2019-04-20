@@ -25,7 +25,7 @@ interface StateProps {
 
 type Props = StateProps & DispatchProps & OwnProps;
 
-const DashboardContainer: React.SFC<Props> = (props: Props) => {
+const CaptureTheBlockContainer: React.SFC<Props> = (props: Props) => {
   const { } = props;
   return <Dashboard />;
 };
@@ -57,4 +57,4 @@ export default compose(
   withReducer,
   withSaga,
   withConnect,
-)(DashboardContainer);
+)(CaptureTheBlockContainer);
