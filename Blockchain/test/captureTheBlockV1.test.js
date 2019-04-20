@@ -173,53 +173,100 @@ describe('Capture The Block V1', () => {
                 assert.equal(ethers.utils.formatUnits(priceToBuySideA, 18), "4.5", "Price Incorrect")
             })
             it('Plays a match 4 players beat 2 opposing', async () =>{
-                // Side A starts
+                // Side A starts (A:1, B:0)
                 await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
 
-                // Side B takes the lead
+                // Side B takes the lead (A:1, B:2)
                 await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
                 await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
 
-                // A swarm hits side A
+                // A swarm hits side A (A:5, B:2)
                 await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player3).purchaseToken(1, 0))
 
-                // Side B tries to catch up
+                // Side B tries to catch up (A:5, B:4)
                 await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
                 await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
- 
-                // Player 1 panics 
+
+                // Player 1 panics (A:8, B:4)
                 await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
 
-                // Player 2 is super keen
+                // Player 2 is super keen (A:9, B:4)
                 await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
 
-                // Player 6 Wants to hammer it 
+                // Player 6 Wants to hammer it (A:13, B:4)
                 await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
                 await(await captureTheBlockInstance.from(player6).purchaseToken(1, 0))
 
-                // Player 2 is so close
+                // Player 2 is so close (A:14, B:4)
                 await(await captureTheBlockInstance.from(player2).purchaseToken(1, 0))
 
 
-                // Side B is putting up a fight
+                // Side B is putting up a fight (A:15, B:8)
                 await(await captureTheBlockInstance.from(player4).purchaseToken(1, 1))
                 await(await captureTheBlockInstance.from(player5).purchaseToken(1, 1))
- 
                   
                 // Player 1 ends the match
                 await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
  
                 let matchData = await captureTheBlockInstance.from(player1).getMatch(1);
                 assert.isOk(matchData[4], "Match not ended");
-                console.log(ethers.utils.formatUnits(matchData[2], 18))
+                assert.equal(ethers.utils.formatUnits(matchData[2], 18), "391.5", "Prize value incorrect")
     
+            })
+            it('Prices selling the first token on gradient 3 at 1.5Dai', async () => {
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                let priceToSellSideA = await captureTheBlockInstance.from(player1).rewardForSell(1, 0);
+                assert.equal(ethers.utils.formatUnits(priceToSellSideA, 18), "1.5", "Price Incorrect")
+            })
+            it('Sells the first token successfully', async () => {
+                let balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not initalized correctly")
+
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
+
+                matchData = await captureTheBlockInstance.from(player1).getMatch(1);
+                assert.equal(ethers.utils.formatUnits(matchData[2], 18), "1.5", "Prize not updated correctly")
+
+                const tokenBalanceOnSide = await captureTheBlockInstance.from(player1).getBalanceOf(1,0,player1.wallet.address);
+
+                assert.isOk(tokenBalanceOnSide.eq(1), "Token Balance incorrect")
+
+                const getSidesPoolBalance = await captureTheBlockInstance.from(player1).getMatchSidePoolBalance(1,0);
+                assert.equal(ethers.utils.formatUnits(getSidesPoolBalance, 18), "1.5", "Prize not updated correctly")
+
+                await(await captureTheBlockInstance.from(player1).sellToken(1, 0))
+                balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "1000.0", "Balance not updated correctly")
+
+                matchData = await captureTheBlockInstance.from(player1).getMatch(1);
+                assert.equal(ethers.utils.formatUnits(matchData[2], 18), "0.0", "Prize not updated correctly")
+
+            })
+            it('Prices selling the second token correctly', async () => {
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                let priceToSellSideA = await captureTheBlockInstance.from(player1).rewardForSell(1, 0);
+                assert.equal(ethers.utils.formatUnits(priceToSellSideA, 18), "4.5", "Price Incorrect")
+            })
+            it('Sells the second token successfully', async () => {
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                await(await captureTheBlockInstance.from(player1).purchaseToken(1, 0))
+                balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "994.0", "Balance not updated correctly")
+
+                await(await captureTheBlockInstance.from(player1).sellToken(1, 0))
+                balance = await pseudoDaiInstance.from(player1).balanceOf(player1.wallet.address);
+                assert.equal(ethers.utils.formatUnits(balance, 18), "998.5", "Balance not initalized correctly")
+
             })
         })
         
