@@ -39,31 +39,51 @@ class Map extends React.Component<Props> {
   scene;
 
   populatePhaserMap() {
+    let scene = new Scene({});
+
     const config = {
       type: Phaser.CANVAS,
-      // mode: Phaser.Scale.FIT,
-      // min: {
-      //   width: 800,
-      //   height: 600
-      // },
-      // max: {
-      //   width: 1600,
-      //   height: 1200
-      // },
-      width: 1600,
-      height: 1200,
+      mode: Phaser.Scale.FIT,
+      min: {
+        width: 800,
+        height: 600
+      },
+      max: {
+        width: 1600,
+        height: 1200
+      },
+      // width: 1600,
+      // height: 1200,
       backgroundColor: '#2d2d2d',
       parent: 'phaser-div',
       pixelArt: true,
       physics: {
-        default: 'impact',
-        impact: { gravity: 200 }, //{x: 0, y: 50}
+        default: 'arcade',
+        physics: { gravity: {x: 0, y: 50} }, //{x: 0, y: 50}
+        impact: { gravity: 50 },
       },
-      scene: [Scene]
+      scene: [scene]
     };
-
+    
     this.game = new Phaser.Game(config);
-    console.log(this.game);
+
+    scene.setPlayers([
+      {
+        side: Side.LEFT,
+        type: PlayerType.ME,
+        progress: 0.9,
+      },
+      {
+        side: Side.RIGHT,
+        type: PlayerType.PARTICIPANT,
+        progress: 0.2,
+      },
+      // {
+      //   side: Side.RIGHT,
+      //   type: PlayerType.PARTICIPANT,
+      //   progress: 0.5,
+      // }
+    ]);
   }
 
   componentDidMount() {
