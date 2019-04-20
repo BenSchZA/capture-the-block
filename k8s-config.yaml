@@ -33,9 +33,13 @@ spec:
             - name: APP_PORT
               value: "3000"
             - name: RINKEBY_DAI_ADDRESS
-              value: "0x80bd574Ac581D398c4C9A4CFad7D573416C9C18C"
+              value: "0x4d87A619499b754CecB135671ED7Eb5F5071245A"
             - name: RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS
-              value: "0x7BF9505d644499612998802A8163627411316f9a"
+              value: "0x573D6899B7F22E737582dBfa4ca784CF284982A5"
+            - name: GOERLI_DAI_ADDRESS
+              value: "0xEA2137a627DaEfE32E19746D329cA196fccc0014"
+            - name: GOERLI_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS
+              value: "0x07b82E4960382956992b3BDCCed7fd7c631068C7"
 ---
 # Frontend Service
 apiVersion: v1

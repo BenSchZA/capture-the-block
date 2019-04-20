@@ -53,6 +53,15 @@ export function* fetchMatch(index: number){
     totalSupply: yield call(getTotalSupply, index, 1),
   }]
 
+  if(newMatch.ended) {
+    let winnerPoolBalance = 0;
+    newMatch.sides.forEach((side) => {
+      if(side.poolBalance > winnerPoolBalance) {
+        newMatch.winner = newMatch.sides.indexOf(side);
+      }
+    });
+  }
+
   yield put(setMatchAction(newMatch))
 }
 

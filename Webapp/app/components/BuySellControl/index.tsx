@@ -35,7 +35,7 @@ const BuySellControl: React.SFC<OwnProps> = ({ classes, side, onBuyClick, onSell
 
   return <Grid container className={classes.gridContainer}>
     <Grid item xs={12} className={classes.centerText}>
-      <Typography variant={'title'}>Side {side}</Typography>
+      <Typography variant={'h5'}>Side {side}</Typography>
     </Grid>
     <Grid item xs={6} className={classes.buttonBuy}>
       <Button variant={'contained'} onClick={() => onBuyClick(side)}>Buy</Button>

@@ -3,6 +3,7 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/s
 import Phaser from 'phaser';
 import Scene from './scene';
 import { Button } from '@material-ui/core';
+import { Match } from 'domain/captureTheBlock/types';
 
 const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => createStyles({
 
@@ -10,6 +11,7 @@ const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => cre
 
 interface Props extends WithStyles<typeof styles> {
   players: Array<Player>,
+  match: Match,
 }
 
 enum Side {
@@ -63,6 +65,7 @@ class Map extends React.Component<Props> {
 
   componentDidMount() {
     this.populatePhaserMap();
+    this.updateMapData();
 
     // let progress = 0;
     // let direction = true;
@@ -84,10 +87,8 @@ class Map extends React.Component<Props> {
   }
 
   componentDidUpdate(prevProps) {
-    if(prevProps.players !== this.props.players) {
-      this.props.players.forEach((player) => {
-        this.scene.setProgress(player.side, player.progress);
-      });
+    if(prevProps.match !== this.props.match) {
+      this.updateMapData();
     }
   }
 
@@ -95,8 +96,17 @@ class Map extends React.Component<Props> {
     return true;
   }
 
+  updateMapData() {
+    if(this.scene) {
+      this.props.players.forEach((player) => {
+        this.scene.setProgress(player.side, player.progress);
+      });
+      this.scene.setMatch(this.props.match);
+    }
+  }
+
   public render() {
-    const {players} = this.props;
+    this.updateMapData();
 
     return (
       <Fragment>
