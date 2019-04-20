@@ -8,7 +8,23 @@ const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => cre
 });
 
 interface Props extends WithStyles<typeof styles> {
+  players: Array<Player>,
+}
 
+enum Side {
+  LEFT,
+  RIGHT
+}
+
+enum PlayerType {
+  ME,
+  PARTICIPANT
+}
+
+interface Player {
+  side: Side,
+  type: PlayerType,
+  progress: Number,
 }
 
 class Map extends React.Component<Props> {
