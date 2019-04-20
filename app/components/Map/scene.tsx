@@ -55,21 +55,24 @@ export default class Scene extends Phaser.Scene {
 
     if(side === Side.LEFT) {
       player = this.createContext.physics.add.image(this.start_x, this.start_y, Side.LEFT.toString());
-      this.playerLeft = player;
+      player.setMaxVelocity(300, 400).setFriction(800, 0);
+      player.body.accelGround = 1200;
+      player.body.accelAir = 600;
+      player.body.jumpSpeed = 300;
+      this.playerLeft.sprite = player;
     } else {
       player = this.createContext.physics.add.image(this.start_x2, this.start_y2, Side.RIGHT.toString());
-      this.playerRight = player;
+      player.setMaxVelocity(300, 400).setFriction(800, 0);
+      player.body.accelGround = 1200;
+      player.body.accelAir = 600;
+      player.body.jumpSpeed = 300;
+      this.playerRight.sprite = player;
     }
 
     // if(who === PlayerType.ME) {
     //   this.createContext.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
     //   this.createContext.cameras.main.startFollow(player);
     // }
-    
-    player.setMaxVelocity(300, 400).setFriction(800, 0);
-    player.body.accelGround = 1200;
-    player.body.accelAir = 600;
-    player.body.jumpSpeed = 300;
 
     return player;
   }
@@ -77,17 +80,17 @@ export default class Scene extends Phaser.Scene {
   movePlayerLeft(player, progress) {
     const coords = this.getPositionLeft(progress);
 
-    // this.physics.moveTo(player, coords.x, coords.y);
-    player.x = coords.x;
-    player.y = coords.y;
+    this.physics.moveTo(player, coords.x, coords.y);
+    // player.x = coords.x;
+    // player.y = coords.y;
   }
 
   movePlayerRight(player, progress) {
     const coords = this.getPositionRight(progress);
 
-    // this.physics.moveTo(player, coords.x, coords.y);
-    player.x = coords.x;
-    player.y = coords.y;
+    this.physics.moveTo(player, coords.x, coords.y);
+    // player.x = coords.x;
+    // player.y = coords.y;
   }
 
   preload() {
@@ -102,8 +105,8 @@ export default class Scene extends Phaser.Scene {
 
   create() {
     this.createContext = this;
-    this.createPlayer.bind(this);
-    this.createPlayer.bind(this);
+    // this.createPlayer.bind(this);
+    // this.createPlayer.bind(this);
 
     this.map = this.make.tilemap({ key: 'map' });
     const tileset = this.map.addTilesetImage('kenney');
@@ -163,17 +166,19 @@ export default class Scene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    if(time - this.lastUpdateTime > 500) {
+    if(time - this.lastUpdateTime > 200) {
       if(!this.playerLeft.sprite) {
-        this.playerLeft.sprite = this.createPlayer.bind(this.createContext)(Side.LEFT);
+        this.playerLeft.sprite = this.createPlayer(Side.LEFT);
+        console.log(this.playerLeft.sprite);
       }
       if(!this.playerRight.sprite) {
-        this.playerRight.sprite = this.createPlayer.bind(this.createContext)(Side.RIGHT);
+        this.playerRight.sprite = this.createPlayer(Side.RIGHT);
+        console.log(this.playerRight.sprite);
       }
 
       if(this.playerLeft.sprite && this.playerRight.sprite) {
         this.movePlayerLeft(this.playerLeft.sprite, this.playerLeft.progress);
-        this.movePlayerLeft(this.playerRight.sprite, this.playerRight.progress);
+        this.movePlayerRight(this.playerRight.sprite, this.playerRight.progress);
       }
 
       this.lastUpdateTime = time;

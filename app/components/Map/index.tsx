@@ -17,15 +17,10 @@ enum Side {
   RIGHT
 }
 
-enum PlayerType {
-  ME,
-  PARTICIPANT
-}
-
 interface Player {
   side: Side,
-  type: PlayerType,
   progress: Number,
+  sprite: any,
 }
 
 class Map extends React.Component<Props> {
@@ -74,10 +69,13 @@ class Map extends React.Component<Props> {
 
     let progress = 0;
     
-    setTimeout(() => {
-      this.scene.setProgress(Side.LEFT, 0.2);
-      this.scene.setProgress(Side.RIGHT, 0.5);
-    }, 5000);
+    // setTimeout(() => {
+    //   this.scene.setProgress(Side.LEFT, progress);
+    //   this.scene.setProgress(Side.RIGHT, progress);
+    //   progress = progress + 0.1;
+    // }, 5000);
+    this.scene.setProgress(Side.LEFT, 0.5);
+    this.scene.setProgress(Side.RIGHT, 1);
   }
 
   shouldComponentUpdate() {
@@ -89,7 +87,6 @@ class Map extends React.Component<Props> {
 
     return (
       <Fragment>
-        <Button onClick={()=>{}}>BUTTON</Button>
         <div id="phaser-div"></div>
       </Fragment>
     );
