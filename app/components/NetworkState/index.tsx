@@ -9,7 +9,30 @@ import { Theme, createStyles, withStyles, WithStyles } from '@material-ui/core';
 import { colors } from 'theme';
 
 const styles = (theme: Theme) => createStyles({
-
+  root: {
+    position: 'fixed',
+    bottom:0,
+    right:0,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    backgroundColor: 'black',
+    borderTopLeftRadius: 10,
+    color: 'white',
+    padding: "3px 10px",
+    "& > *:last-child":{
+      height: 10,
+      width: 10,
+      marginLeft: 5,
+      display: 'block',
+      borderRadius: 30,
+      backgroundColor: 'red',
+      "&.ready":{
+        backgroundColor: 'green'
+      }
+    }
+  }
 });
 
 interface OwnProps extends WithStyles<typeof styles> {
@@ -27,7 +50,7 @@ const NetworkState: React.SFC<OwnProps> = (props: OwnProps) => {
   }else{
     networkName =  'Not connected'
   }
-  return <div>
+  return <div className={classes.root}>
     <span>
       {networkName}
     </span>

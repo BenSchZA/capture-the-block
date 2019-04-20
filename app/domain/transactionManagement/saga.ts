@@ -6,7 +6,7 @@ import { checkBalancesOnChain, mintDai } from "./chainInteractions";
 // Meta
 export function* refreshBalances(){
   let newBalances = yield call(checkBalancesOnChain);
-  if(newBalances.daiBalance == 0){
+  if (newBalances.daiBalance == 0) {
     yield put(setPendingState(true));
     yield put(setRemainingTxCountAction(1));
     yield put(setTxContextAction(`Setting up with pseudo dai`));
