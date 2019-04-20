@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/BenSchZA/capture-the-block/issues"
   },
-  "homepage": "https://github.com/BenSchZA/capture-the-block#readme"
+  "homepage": "https://github.com/BenSchZA/capture-the-block#readme",
+  "dependencies": {
+    "phaser": "^3.16.2"
+  }
 }
