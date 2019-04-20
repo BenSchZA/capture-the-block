@@ -1,5 +1,5 @@
-import { eventChannel } from 'redux-saga';
-import { call, cancel, delay, fork, put, race, select, take, all } from 'redux-saga/effects';
+
+import { call, fork, put, take } from 'redux-saga/effects';
 import * as captureTheBlockActions from './actions';
 import { 
   getMatch, 

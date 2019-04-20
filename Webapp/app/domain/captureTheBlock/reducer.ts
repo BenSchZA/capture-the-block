@@ -1,6 +1,6 @@
 // import { ContainerState, ContainerActions } from './types';
 import { getType } from 'typesafe-actions';
-import * as authenticationActions from './actions';
+import * as captureTheBlockActions from './actions';
 import { DomainActions, DomainState, Side } from './types';
 
 export const initialState: DomainState = {
@@ -19,44 +19,43 @@ export const initialState: DomainState = {
 
 function captureTheBlockReducer(state: DomainState = initialState, action: DomainActions) {
   switch (action.type) {
-    case getType(authenticationActions.startMatchAction.success):
+    case getType(captureTheBlockActions.startMatchAction.success):
       return {
         ...state,
       };
-    case getType(authenticationActions.buyTokenAction.success):
+    case getType(captureTheBlockActions.buyTokenAction.success):
       return {
         ...state,
       };
-    case getType(authenticationActions.sellTokenAction.success):
+    case getType(captureTheBlockActions.sellTokenAction.success):
       return {
         ...state,
       };
-    case getType(authenticationActions.claimWinningsAction.success):
+    case getType(captureTheBlockActions.claimWinningsAction.success):
       return {
         ...state,
       };
-    case getType(authenticationActions.getMatchAction):
+    case getType(captureTheBlockActions.getMatchAction):
       return {
         ...state,
       }
-    case getType(authenticationActions.getMatchPoolBalanceAction):
+    case getType(captureTheBlockActions.getMatchPoolBalanceAction):
       return {
         ...state,
       }
-    case getType(authenticationActions.getBalanceAction):
+    case getType(captureTheBlockActions.getBalanceAction):
       return {
         ...state,
       }
-    case getType(authenticationActions.matchIndexAction):
+    case getType(captureTheBlockActions.matchIndexAction):
       return {
         ...state,
       }
-    case getType(authenticationActions.collateralAddressAction):
+    case getType(captureTheBlockActions.collateralAddressAction):
       return {
         ...state,
-
       }
-    case getType(authenticationActions.setMatchAction):
+    case getType(captureTheBlockActions.setMatchAction):
       return {
         ...state,
         [action.payload.index]: {
