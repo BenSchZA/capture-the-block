@@ -10,6 +10,14 @@ const daiSettings = {
     decimals: 18
 }
 
+const matchSetting = [
+    {
+        numberOfSides: 2,
+        targetSupply: 15,
+        gradient: 3,
+    }
+]
+
 describe('Capture The Block V1', () => {
     let deployer;
     let adminAccount = devnetAccounts[1];
@@ -48,7 +56,7 @@ describe('Capture The Block V1', () => {
         await pseudoDaiInstance.from(player5.wallet.address).mint();
         await pseudoDaiInstance.from(player6.wallet.address).mint();
 
-        // Unlock approval
+        // // Unlock approval
         await pseudoDaiInstance.from(adminAccount.wallet.address)
             .approve(
                 captureTheBlockInstance.contract.address,
@@ -94,7 +102,24 @@ describe('Capture The Block V1', () => {
     })
 
     describe('Game testing', () => {
-        it('Creates a match')
+        it('Creates a match', async () => {
+            let currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+            assert.isOk(currentMatchIndex.eq(0), "Match incorrect");
+
+            let matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
+            assert.isOk(matchData[4], "Initial match slot not set up correctly");
+
+            await(await await captureTheBlockInstance.from(player1).createMatch(matchSetting[0].numberOfSides, matchSetting[0].targetSupply, matchSetting[0].gradient)).wait()
+
+            currentMatchIndex = await captureTheBlockInstance.from(player1).matchIndex();
+            assert.isOk(currentMatchIndex.eq(1), "Match incorrect");
+
+            matchData = await captureTheBlockInstance.from(player1).getMatch(currentMatchIndex);
+            assert.equal(matchData[0], matchSetting[0].numberOfSides, "First match sides not set up correctly");
+            assert.isOk(matchData[1].eq(matchSetting[0].targetSupply), "First match targetSupply not set up correctly");
+            assert.isOk(matchData[3].eq(matchSetting[0].gradient), "First match gradient not set up correctly");
+
+        })
         it('Purchases a token for side 1')
     })
 
