@@ -92,11 +92,6 @@ export async function initBlockchainResources() {
       throw "Invalid network"
     }
 
-    // const captureTheBlockContract = (await new ethers.Contract(`${blockchainResources.captureTheBlockContractAddress}`, JSON.stringify(captureTheBlockContractABI), blockchainResources.provider)).connect(blockchainResources.signer);
-
-    // const publishedBlock = parseInt(ethers.utils.formatUnits(await captureTheBlockContract.publishedBlocknumber(), 0));
-
-    // blockchainResources.publishedBlock = publishedBlock;
   }
   catch(e){
     throw e;
