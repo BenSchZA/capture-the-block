@@ -42,8 +42,8 @@ const mapDispatchToProps = (dispatch: Dispatch, { side }: OwnProps): DispatchPro
 });
 
 const mapStateToProps = (state: ApplicationRootState, {side}: OwnProps) => ({
-  buyPrice: state.captureTheBlock.match.sides[side].buyPrice,
-  sellPrice: state.captureTheBlock.match.sides[side].sellPrice,
+  buyPrice: state.captureTheBlock.match.sides.length > 0 && state.captureTheBlock.match.sides[side] ? state.captureTheBlock.match.sides[side].buyPrice : 0,
+  sellPrice: state.captureTheBlock.match.sides.length > 0 && state.captureTheBlock.match.sides[side] ? state.captureTheBlock.match.sides[side].sellPrice : 0,
 })
 
 const withConnect = connect(
