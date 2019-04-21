@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import { compose, Dispatch } from 'redux';
 import BuySellControl from 'components/BuySellControl';
 import * as actions from '../../domain/captureTheBlock/actions';
+import { ApplicationRootState } from 'types';
 
 interface OwnProps {
   side: number,
@@ -19,13 +20,18 @@ interface DispatchProps {
   onSellClick(): void;
 }
 
-interface StateProps { }
+interface StateProps {
+  buyPrice: number;
+  sellPrice: number
+}
 
 type Props = DispatchProps & OwnProps & StateProps;
 
-const BuySellContainer: React.SFC<Props> = ({ side, onBuyClick, onSellClick }: Props) => {
+const BuySellContainer: React.SFC<Props> = ({ side, onBuyClick, onSellClick, buyPrice, sellPrice }: Props) => {
   return <BuySellControl
     side={side}
+    buyPrice={buyPrice}
+    sellPrice={sellPrice}
     onBuyClick={onBuyClick}
     onSellClick={onSellClick} />;
 };
@@ -35,9 +41,13 @@ const mapDispatchToProps = (dispatch: Dispatch, { side }: OwnProps): DispatchPro
   onSellClick: () => dispatch(actions.sellTokenAction.request(side)),
 });
 
+const mapStateToProps = (state: ApplicationRootState, {side}: OwnProps) => ({
+  buyPrice: state.captureTheBlock.match.sides[side].buyPrice,
+  sellPrice: state.captureTheBlock.match.sides[side].sellPrice,
+})
 
 const withConnect = connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps,
 );
 
