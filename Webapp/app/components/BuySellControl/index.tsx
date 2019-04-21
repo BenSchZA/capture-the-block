@@ -27,21 +27,23 @@ const styles = (theme: Theme) =>
 
 interface OwnProps extends WithStyles<typeof styles> {
   side: number;
+  buyPrice: number;
+  sellPrice: number,
   onBuyClick(side: number): void;
   onSellClick(side: number): void;
 }
 
-const BuySellControl: React.SFC<OwnProps> = ({ classes, side, onBuyClick, onSellClick }: OwnProps) => {
+const BuySellControl: React.SFC<OwnProps> = ({ classes, side, onBuyClick, onSellClick, buyPrice, sellPrice }: OwnProps) => {
 
   return <Grid container className={classes.gridContainer}>
     <Grid item xs={12} className={classes.centerText}>
       <Typography variant={'h5'}>Side {side}</Typography>
     </Grid>
     <Grid item xs={6} className={classes.buttonBuy}>
-      <Button variant={'contained'} onClick={() => onBuyClick(side)}>Buy</Button>
+      <Button variant={'contained'} onClick={() => onBuyClick(side)}>{`Buy for $${buyPrice}`}</Button>
     </Grid>
     <Grid item xs={6} className={classes.buttonSell}>
-      <Button variant={'contained'} onClick={() => onSellClick(side)}>Sell</Button>
+      <Button variant={'contained'} onClick={() => onSellClick(side)}>{`Sell for $${sellPrice}`}</Button>
     </Grid>
   </Grid>;
 };

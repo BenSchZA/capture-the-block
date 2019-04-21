@@ -89,7 +89,7 @@ const mapStateToProps = (state: ApplicationRootState) => ({
 })
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
-  startMatch: () => dispatch(captureTheBlockActions.startMatchAction.request({ numberOfSides: 2, targetSupply: 15, gradient: 3 })),
+  startMatch: () => dispatch(captureTheBlockActions.startMatchAction.request({ numberOfSides: 2, targetSupply: 15, gradient: 1 })),
   claimWinningsAction: (index) => dispatch(captureTheBlockActions.claimWinningsAction.request(index))
 })
 

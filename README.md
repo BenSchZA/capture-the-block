@@ -8,11 +8,15 @@ Two opposing bonding curves, and a fight to capture the flag. The team who gets 
 [Rinkeby CTB Address](https://rinkeby.etherscan.io/address/0x573D6899B7F22E737582dBfa4ca784CF284982A5)
 
 ```
+MAINNET_DAI_ADDRESS=0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359
+MAINNET_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS=0x1c6b164beaa441b182ec366c461cd84c9137fe90
 RINKEBY_DAI_ADDRESS=0x4d87A619499b754CecB135671ED7Eb5F5071245A
 RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS=0x573D6899B7F22E737582dBfa4ca784CF284982A5
 GOERLI_DAI_ADDRESS=0xEA2137a627DaEfE32E19746D329cA196fccc0014
 GOERLI_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS=0x07b82E4960382956992b3BDCCed7fd7c631068C7
 ```
+
+[Pay-off Matrix](https://docs.google.com/spreadsheets/d/1HDg7eu00dPJ4zWdco9iPvLqfzp9iKQn6R1mK8vi0xHg/edit?usp=sharing)
 
 # Game Theory
 
@@ -56,3 +60,4 @@ There are some variables that we design and control to keep gameplay going:
 3. Multiple games at any given time
 4. MMO (massively multi-market online) type gameplay where n number of bonding curves can compete
 5. Other games, such as top trumps, tug of war, etc.
+6. Integrate CryptoKitties NFTs into the curves!
