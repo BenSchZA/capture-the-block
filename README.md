@@ -2,7 +2,6 @@
 Two opposing bonding curves, and a fight to capture the flag. The team who gets to the top of the hill first wins the entire collateral pot!
 
 [Capture The Block Webapp](https://capture-the-block.mol.ai/)
-[GitHub repository](https://github.com/BenSchZA/capture-the-block)
 
 # The technology
 
