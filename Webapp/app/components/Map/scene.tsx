@@ -173,22 +173,25 @@ export default class Scene extends Phaser.Scene {
       this.poolBalancePot.text = `Pool balance: $${totalPot}`;
     }
 
+    const poolBalanceLeftText = this.match.sides.length > 0 ? this.match.sides[Side.LEFT].balance : '...';
+    const poolBalanceRightText = this.match.sides.length > 0 ? this.match.sides[Side.RIGHT].balance : '...';
+
     if(!this.poolBalanceLeft) {
-      if(this.match.sides.length > 0) this.poolBalanceLeft = this.add.text(this.start_x - 160, this.start_y + 50, `Stake: $${this.match.sides[Side.LEFT].balance}`, {
+      if(this.match.sides.length > 0) this.poolBalanceLeft = this.add.text(this.start_x - 160, this.start_y + 50, `Stake: $${poolBalanceLeftText}`, {
         fontSize: '24px',
         fill: '#ffffff'
       });
     } else {
-      if(this.match.sides.length > 0) this.poolBalanceLeft.text = `Stake: $${this.match.sides[Side.LEFT].balance}`;
+      if(this.match.sides.length > 0) this.poolBalanceLeft.text = `Stake: $${poolBalanceLeftText}`;
     }
 
     if(!this.poolBalanceRight) {
-      if(this.match.sides.length > 0) this.poolBalanceRight = this.add.text(this.start_x2 + 40, this.start_y + 50, `Stake: $${this.match.sides[Side.RIGHT].balance}`, {
+      if(this.match.sides.length > 0) this.poolBalanceRight = this.add.text(this.start_x2 + 40, this.start_y + 50, `Stake: $${poolBalanceRightText}`, {
         fontSize: '24px',
         fill: '#ffffff'
       });
     } else {
-      if(this.match.sides.length > 0) this.poolBalanceRight.text = `Stake: $${this.match.sides[Side.RIGHT].balance}`;
+      if(this.match.sides.length > 0) this.poolBalanceRight.text = `Stake: $${poolBalanceRightText}`;
     }
   }
 
@@ -201,8 +204,8 @@ export default class Scene extends Phaser.Scene {
       fill: '#ffffff'
     };
 
-    const leftPrice = `1 Token = $${this.match.sides[Side.LEFT].buyPrice}`;
-    const rightPrice = `1 Token = $${this.match.sides[Side.RIGHT].buyPrice}`;
+    const leftPrice = `1 Token = $${this.match.sides.length > 0 ? this.match.sides[Side.LEFT].buyPrice : '...'}`;
+    const rightPrice = `1 Token = $${this.match.sides.length > 0 ? this.match.sides[Side.RIGHT].buyPrice : '...'}`;
     
     if(!this.labelLeft) {
       this.labelLeft = this.createContext.add.text(this.start_x + 250, this.start_y - 200, leftPrice, style);
@@ -251,7 +254,6 @@ export default class Scene extends Phaser.Scene {
 
   setMatch(match: Match) {
     this.match = match;
-    // this.updatePot();
   }
 
   updateProgress() {
