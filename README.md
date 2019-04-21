@@ -5,6 +5,8 @@ Two opposing bonding curves, and a fight to capture the flag. The team who gets 
 
 [GitHub repository](https://github.com/BenSchZA/capture-the-block)
 
+[Rinkeby CTB Address](https://rinkeby.etherscan.io/address/0x573D6899B7F22E737582dBfa4ca784CF284982A5)
+
 ```
 RINKEBY_DAI_ADDRESS=0x4d87A619499b754CecB135671ED7Eb5F5071245A
 RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS=0x573D6899B7F22E737582dBfa4ca784CF284982A5
