@@ -14,6 +14,8 @@ GOERLI_DAI_ADDRESS=0xEA2137a627DaEfE32E19746D329cA196fccc0014
 GOERLI_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS=0x07b82E4960382956992b3BDCCed7fd7c631068C7
 ```
 
+[Pay-off Matrix](https://docs.google.com/spreadsheets/d/1HDg7eu00dPJ4zWdco9iPvLqfzp9iKQn6R1mK8vi0xHg/edit?usp=sharing)
+
 # Game Theory
 
 Crypto trading is a significant chunk of blockchain culture. Capture the Block takes the ambitious step of taking crypto trading to the next dimension with competing bonding curves.
@@ -56,3 +58,4 @@ There are some variables that we design and control to keep gameplay going:
 3. Multiple games at any given time
 4. MMO (massively multi-market online) type gameplay where n number of bonding curves can compete
 5. Other games, such as top trumps, tug of war, etc.
+6. Integrate CryptoKitties NFTs into the curves!
