@@ -12,7 +12,8 @@
     "deploy": "etherlime deploy --runs=999",
     "deploy:devnet": "etherlime deploy --network=devnet --runs=999",
     "deploy:goerli": "etherlime deploy --network=goerli --runs=999",
-    "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=999"
+    "deploy:rinkeby": "etherlime deploy --network=rinkeby --runs=999",
+    "deploy:mainnet": "etherlime deploy --network=mainnet --runs=999"
   },
   "author": "Ryan N, Ben S, Michael Y, Michael J",
   "license": "MIT",

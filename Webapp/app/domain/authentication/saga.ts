@@ -6,19 +6,21 @@ import * as authenticationActions from './actions';
 import {fetchAllAction} from '../captureTheBlock/actions';
 import ActionTypes from './constants';
 import { refreshBalancesAction, setTxContextAction, setRemainingTxCountAction, setPendingState } from 'domain/transactionManagement/actions';
-import { getBlockchainObjects, signMessage } from 'blockchainResources';
+import { getBlockchainObjects, signMessage, blockchainResources } from 'blockchainResources';
 import { balanceOfTx, getApproval, mintTx, approveTx } from './chainInteractions';
 
 export function* checkDaiRequirements(){
   try {
     const allowancePassed = yield call(getApproval);
     if(!allowancePassed){
-      const balance = yield call(balanceOfTx);
-      if(balance == 0){
-        yield put(setRemainingTxCountAction(2));
-        yield put(setPendingState(true));
-        yield put(setTxContextAction(`Claiming Free tokens`));
-        const mintedAmount = yield call(mintTx);
+      if(blockchainResources.networkId != 1){
+        const balance = yield call(balanceOfTx);
+        if(balance == 0){
+          yield put(setRemainingTxCountAction(2));
+          yield put(setPendingState(true));
+          yield put(setTxContextAction(`Claiming Free tokens`));
+          const mintedAmount = yield call(mintTx);
+        }
       }
       yield put(setRemainingTxCountAction(1));
       yield put(setPendingState(true));

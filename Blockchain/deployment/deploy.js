@@ -22,6 +22,12 @@ const defaultConfigs = {
     gasLimit: 4700000
 }
 
+
+
+const mainnetConfig = {
+    gasPrice: 20000000000,
+    gasLimit: 1430000
+}
 const goerliDefaultConfigs = {
     gasPrice: 20000000000,
     gasLimit: 4700000,
@@ -35,6 +41,15 @@ const deploy = async (network, secret) => {
 	let deployer, daiAddress;
 	
 	switch(network){
+		case "mainnet":{
+			console.log("asdasdas")
+			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, mainnetConfig);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				DAI_ADDRESS);
+				break;
+		}
 		case "goerli": {
 			console.log(secret)
 			deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, "https://rpc.goerli.mudit.blog/", goerliDefaultConfigs)
@@ -49,6 +64,7 @@ const deploy = async (network, secret) => {
 				CaptureTheBlockV1, 
 				false,
 				pseudoDaiInstance.contract.address);
+				break;
 		}
 		case "devnet": {
 			deployer = new etherlime.EtherlimeDevnetDeployer(secret, 8545, defaultConfigs)
@@ -63,6 +79,7 @@ const deploy = async (network, secret) => {
 				CaptureTheBlockV1, 
 				false,
 				pseudoDaiInstance.contract.address);
+				break;
 		}
 		case "rinkeby":{
 			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, defaultConfigs);
