@@ -38,7 +38,7 @@ class Map extends React.Component<Props> {
 
     const config = {
       type: Phaser.CANVAS,
-      mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
+      mode: Phaser.Scale.NO_ZOOM,
       // min: {
       //   width: 800,
       //   height: 600
@@ -66,6 +66,9 @@ class Map extends React.Component<Props> {
   componentDidMount() {
     this.populatePhaserMap();
     this.updateMapData();
+    // this.game.scale.pageAlignHorizontally = true;
+    // this.game.scale.pageAlignVertically = true;
+    // this.game.scale.refresh();
 
     // let progress = 0;
     // let direction = true;
