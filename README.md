@@ -1,12 +1,27 @@
 # Capture the Block
-Bonding curves and floppy blocks.
+Two opposing bonding curves, and a fight to capture the flag. The team who gets to the top of the hill first wins the entire collateral pot!
 
-# MVP
+[Capture The Block Webapp](https://capture-the-block.mol.ai/)
+[GitHub repository](https://github.com/BenSchZA/capture-the-block)
 
-1. Single game at a time
-2. No limit on number of players per side
-3. Players randomly allocated
-4. Set step size
+# The technology
+
+Bonding curves enable some interesting dynamics. These dynamics can be complex, introduce interesting game dynamics, but are relatively untested. Capture The Block attaches a well known game, capture the flag, directly to the dynamics of two opposing bonding curves.
+
+# Gameplay
+
+A user enters the site. If there is a game already in play, the user can join immediately and start trading either side of the hill. It is a multiplayer game, so opposing teams are fighting to get to the top of their bonding curve first to secure the collateral of both sides!
+
+This introduces some interesting dynamics. Players are encouraged to pump & dump the other side, perform sybil attacks, etc. - anything that could reasonably happen in the real world while using bonding curves. We want the players to experiment, and that includes digging into the contracts for those willing.
+
+At the end of the game, the team who gets to the top first has the total collateral from both sides fairly redistributed among themselves based on final token ownership.
+
+## Controlled Variables
+
+There are some variables that we design and control to keep gameplay going:
+1. The total market collateral
+2. The gradient of the curve
+3. The step size in tokens
 
 # Dynamics
 
@@ -37,16 +52,3 @@ Bonding curves and floppy blocks.
 # End of Game
 
 Total pot distrubuted based on winning teams distribution of tokens.
-
-# Contract addresses
-## Rinkeby
-Dai Address: 0x45b2402EBc3e5db2e85B1d72EA71DcC1B3C714a5
-Capture The Block: 0x8D295b4aF286aFe5deE89ed4633B3fe91Bd0091B
-
-## Goerli
-Dai Address: 0xEdf89dFcF63B4918a57413f7F2b59c8bEa0B80CE
-Capture The Block: 0x881EEc661bb916048d44eE813E34041094112d18
-
-## Mainnet
-Dai Address:
-Capture The Block: 
