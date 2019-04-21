@@ -228,7 +228,6 @@ describe('Capture The Block V1', () => {
                 it('Plays a match 4 players beat 2 opposing', async () =>{
                     // Side A starts (A:1, B:0)
                     await(await captureTheBlockInstance.from(player1).purchaseToken(0))
-    
                     // Side B takes the lead (A:1, B:2)
                     await(await captureTheBlockInstance.from(player4).purchaseToken(1))
                     await(await captureTheBlockInstance.from(player5).purchaseToken(1))
@@ -260,17 +259,27 @@ describe('Capture The Block V1', () => {
                     // Player 2 is so close (A:14, B:4)
                     await(await captureTheBlockInstance.from(player2).purchaseToken(0))
     
-    
                     // Side B is putting up a fight (A:15, B:8)
                     await(await captureTheBlockInstance.from(player4).purchaseToken(1))
                     await(await captureTheBlockInstance.from(player5).purchaseToken(1))
-                      
+
                     // Player 1 ends the match
                     await(await captureTheBlockInstance.from(player1).purchaseToken(0))
      
                     let matchData = await captureTheBlockInstance.from(player1).getMatch(1);
                     assert.isOk(matchData[4], "Match not ended");
                     assert.equal(ethers.utils.formatUnits(matchData[2], 18), "391.5", "Prize value incorrect")
+                })
+
+                it("It manages payouts without remainders", async () =>{
+                    for(let i = 0; i < 15; i++){
+                        await(await captureTheBlockInstance.from(player1).purchaseToken(0))
+                    }
+                    await(await captureTheBlockInstance.from(player1).claimWinnings(1));
+                   
+                    const daiBalanceOfGM = await pseudoDaiInstance.from(player1).balanceOf(captureTheBlockInstance.contractAddress);
+                    assert.equal(ethers.utils.formatUnits(daiBalanceOfGM, 18), "0.0", "Balance incorrect")
+
                 })
 
                 it("Distributes winnings succesfully", async ()=>{
