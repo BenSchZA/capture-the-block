@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { Match } from 'domain/captureTheBlock/types';
 
 enum Side {
   LEFT,
@@ -17,6 +18,9 @@ export default class Scene extends Phaser.Scene {
   cursors;
   scene;
   map;
+
+  drop_y_1 = 680-300;
+  drop_y_2 = 680-45-300;
 
   start_x = 420;
   start_y = 680;
@@ -54,17 +58,19 @@ export default class Scene extends Phaser.Scene {
     let player;
 
     if(side === Side.LEFT) {
-      player = this.createContext.physics.add.image(this.start_x, this.start_y, Side.LEFT.toString());
+      player = this.createContext.physics.add.image(this.start_x, this.drop_y_1, Side.LEFT.toString());
       player.setMaxVelocity(300, 400).setFriction(800, 0);
-      player.body.accelGround = 1200;
-      player.body.accelAir = 600;
+      // player.body.accelGround = 1200;
+      // player.body.gravity = 200;
+      // player.body.accelAir = 600;
       player.body.jumpSpeed = 300;
       this.playerLeft.sprite = player;
     } else {
-      player = this.createContext.physics.add.image(this.start_x2, this.start_y2, Side.RIGHT.toString());
+      player = this.createContext.physics.add.image(this.start_x2, this.drop_y_2, Side.RIGHT.toString());
       player.setMaxVelocity(300, 400).setFriction(800, 0);
-      player.body.accelGround = 1200;
-      player.body.accelAir = 600;
+      // player.body.accelGround = 1200;
+      // player.body.gravity = 200;
+      // player.body.accelAir = 600;
       player.body.jumpSpeed = 300;
       this.playerRight.sprite = player;
     }
@@ -77,18 +83,18 @@ export default class Scene extends Phaser.Scene {
     return player;
   }
 
-  movePlayerLeft(player, progress) {
+  movePlayerLeft(player, progress, speed) {
     const coords = this.getPositionLeft(progress);
 
-    this.physics.moveTo(player, coords.x, coords.y);
+    this.physics.moveTo(player, coords.x, coords.y, speed);
     // player.x = coords.x;
     // player.y = coords.y;
   }
 
-  movePlayerRight(player, progress) {
+  movePlayerRight(player, progress, speed) {
     const coords = this.getPositionRight(progress);
 
-    this.physics.moveTo(player, coords.x, coords.y);
+    this.physics.moveTo(player, coords.x, coords.y, speed);
     // player.x = coords.x;
     // player.y = coords.y;
   }
@@ -137,23 +143,93 @@ export default class Scene extends Phaser.Scene {
     // Note: the collision map is static! If you remove/change the colliding tiles, it will not be
     // updated.
  
-    const help = this.add.text(16, 16, 'Buy and sell up and down the bonding curve to move,\nand try to capture the flag first!', {
+    const help = this.add.text(16, 16, 'Buy/sell up and down the bonding curve to move,\nand try to capture the flag first!\nWinning team splits the pot!', {
         fontSize: '24px',
         fill: '#ffffff'
     });
     help.setScrollFactor(0);
+
+    this.playerLeft.sprite = this.createPlayer(Side.LEFT);
+    this.playerRight.sprite = this.createPlayer(Side.RIGHT);
+
+    this.updatePot();
+
+    setTimeout(this.updateProgress, 1000);
+  }
+
+  poolBalancePot;
+  poolBalanceLeft;
+  poolBalanceRight;
+
+  updatePot() {
+    const totalPot = this.match.prize;
+
+    if(!this.poolBalancePot) {
+      this.poolBalancePot = this.add.text(this.end_x2, this.end_y2, `Pool balance: $${totalPot}`, {
+        fontSize: '24px',
+        fill: '#ffffff'
+      });
+    } else {
+      this.poolBalancePot.text = `Pool balance: $${totalPot}`;
+    }
+
+    const poolBalanceLeftText = this.match.sides.length > 0 ? this.match.sides[Side.LEFT].balance : '...';
+    const poolBalanceRightText = this.match.sides.length > 0 ? this.match.sides[Side.RIGHT].balance : '...';
+
+    if(!this.poolBalanceLeft) {
+      if(this.match.sides.length > 0) this.poolBalanceLeft = this.add.text(this.start_x - 160, this.start_y + 50, `Stake: $${poolBalanceLeftText}`, {
+        fontSize: '24px',
+        fill: '#ffffff'
+      });
+    } else {
+      if(this.match.sides.length > 0) this.poolBalanceLeft.text = `Stake: $${poolBalanceLeftText}`;
+    }
+
+    if(!this.poolBalanceRight) {
+      if(this.match.sides.length > 0) this.poolBalanceRight = this.add.text(this.start_x2 + 40, this.start_y + 50, `Stake: $${poolBalanceRightText}`, {
+        fontSize: '24px',
+        fill: '#ffffff'
+      });
+    } else {
+      if(this.match.sides.length > 0) this.poolBalanceRight.text = `Stake: $${poolBalanceRightText}`;
+    }
+  }
+
+  labelLeft;
+  labelRight;
+
+  updateSpritePriceLabels() {
+    const style = { 
+      fontSize: '20px',
+      fill: '#ffffff'
+    };
+
+    const leftPrice = `1 Token = $${this.match.sides.length > 0 ? this.match.sides[Side.LEFT].buyPrice : '...'}`;
+    const rightPrice = `1 Token = $${this.match.sides.length > 0 ? this.match.sides[Side.RIGHT].buyPrice : '...'}`;
+    
+    if(!this.labelLeft) {
+      this.labelLeft = this.createContext.add.text(this.start_x + 250, this.start_y - 200, leftPrice, style);
+    } else {
+      this.labelLeft.text = leftPrice;
+    }
+
+    if(!this.labelRight) {
+      this.labelRight = this.createContext.add.text(this.start_x2 - 450, this.start_y - 200, rightPrice, style);
+    } else {
+      this.labelRight.text = rightPrice;
+    }
   }
 
   lastUpdateTime = 0;
 
   playerLeft = {
     side: Side.LEFT,
-    progress: 0,
+    progress: 0.0,
     sprite: null,
   } as Player;
   playerRight = {
     side: Side.RIGHT,
-    progress: 0,
+    progress: 0.0,
     sprite: null,
   } as Player;
 
@@ -165,21 +241,35 @@ export default class Scene extends Phaser.Scene {
     }
   }
 
+  match: Match = {
+    ended: false,
+    numberOfSides: 2,
+    gradient: 3,
+    index: 0,
+    prize: 0,
+    sides: [],
+    targetSupply: 0,
+    winner: 0
+  }
+
+  setMatch(match: Match) {
+    this.match = match;
+  }
+
+  updateProgress() {
+    if(this.playerLeft && this.playerLeft.sprite) {
+      this.movePlayerLeft(this.playerLeft.sprite, this.playerLeft.progress, 100);
+    }
+    if(this.playerRight && this.playerRight.sprite) {
+      this.movePlayerRight(this.playerRight.sprite, this.playerRight.progress, 100);
+    }
+  }
+
   update(time, delta) {
     if(time - this.lastUpdateTime > 200) {
-      if(!this.playerLeft.sprite) {
-        this.playerLeft.sprite = this.createPlayer(Side.LEFT);
-        console.log(this.playerLeft.sprite);
-      }
-      if(!this.playerRight.sprite) {
-        this.playerRight.sprite = this.createPlayer(Side.RIGHT);
-        console.log(this.playerRight.sprite);
-      }
-
-      if(this.playerLeft.sprite && this.playerRight.sprite) {
-        this.movePlayerLeft(this.playerLeft.sprite, this.playerLeft.progress);
-        this.movePlayerRight(this.playerRight.sprite, this.playerRight.progress);
-      }
+      this.updateProgress();
+      this.updatePot();
+      this.updateSpritePriceLabels();
 
       this.lastUpdateTime = time;
     }

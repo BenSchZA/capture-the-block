@@ -86,6 +86,7 @@
     "minimist": "1.2.0",
     "node-loader": "^0.6.0",
     "normalizr": "^3.3.0",
+    "phaser": "^3.16.2",
     "prop-types": "15.6.1",
     "react": "16.4.2",
     "react-blockies": "^1.4.1",

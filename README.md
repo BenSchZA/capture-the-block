@@ -37,3 +37,16 @@ Bonding curves and floppy blocks.
 # End of Game
 
 Total pot distrubuted based on winning teams distribution of tokens.
+
+# Contract addresses
+## Rinkeby
+Dai Address: 0x45b2402EBc3e5db2e85B1d72EA71DcC1B3C714a5
+Capture The Block: 0x8D295b4aF286aFe5deE89ed4633B3fe91Bd0091B
+
+## Goerli
+Dai Address: 0xEdf89dFcF63B4918a57413f7F2b59c8bEa0B80CE
+Capture The Block: 0x881EEc661bb916048d44eE813E34041094112d18
+
+## Mainnet
+Dai Address:
+Capture The Block: 

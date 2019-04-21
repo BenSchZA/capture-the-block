@@ -3,6 +3,7 @@ import { createStyles, withStyles, WithStyles, Theme } from '@material-ui/core/s
 import Phaser from 'phaser';
 import Scene from './scene';
 import { Button } from '@material-ui/core';
+import { Match } from 'domain/captureTheBlock/types';
 
 const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => createStyles({
 
@@ -10,6 +11,7 @@ const styles = ({ palette, breakpoints, spacing, zIndex, mixins }: Theme) => cre
 
 interface Props extends WithStyles<typeof styles> {
   players: Array<Player>,
+  match: Match,
 }
 
 enum Side {
@@ -20,12 +22,9 @@ enum Side {
 interface Player {
   side: Side,
   progress: Number,
-  sprite: any,
 }
 
 class Map extends React.Component<Props> {
-  public state = {};
-
   constructor(props) {
     super(props);
     this.populatePhaserMap.bind(this);
@@ -39,7 +38,7 @@ class Map extends React.Component<Props> {
 
     const config = {
       type: Phaser.CANVAS,
-      mode: Phaser.Scale.WIDTH_CONTROLS_HEIGHT,
+      mode: Phaser.Scale.NO_ZOOM,
       // min: {
       //   width: 800,
       //   height: 600
@@ -66,32 +65,51 @@ class Map extends React.Component<Props> {
 
   componentDidMount() {
     this.populatePhaserMap();
+    this.updateMapData();
+    // this.game.scale.pageAlignHorizontally = true;
+    // this.game.scale.pageAlignVertically = true;
+    // this.game.scale.refresh();
 
-    let progress = 0;
-    let direction = true;
+    // let progress = 0;
+    // let direction = true;
     
-    setInterval(() => {
-      this.scene.setProgress(Side.LEFT, progress);
-      this.scene.setProgress(Side.RIGHT, progress);
-      if(direction) {
-        progress = progress + 0.1;
-      } else {
-        progress = progress - 0.1;
-      }
-      if(progress >= 0.9) direction = false;
-      if(progress <= 0.1) direction = true;
-      console.log(progress);
-    }, 5000);
+    // setInterval(() => {
+    //   this.scene.setProgress(Side.LEFT, progress);
+    //   this.scene.setProgress(Side.RIGHT, progress);
+    //   if(direction) {
+    //     progress = progress + 0.1;
+    //   } else {
+    //     progress = progress - 0.1;
+    //   }
+    //   if(progress >= 0.9) direction = false;
+    //   if(progress <= 0.1) direction = true;
+    //   console.log(progress);
+    // }, 5000);
     // this.scene.setProgress(Side.LEFT, 0.5);
     // this.scene.setProgress(Side.RIGHT, 1);
   }
 
+  componentDidUpdate(prevProps) {
+    if(prevProps.match !== this.props.match) {
+      this.updateMapData();
+    }
+  }
+
   shouldComponentUpdate() {
-    return false;
+    return true;
+  }
+
+  updateMapData() {
+    if(this.scene) {
+      this.props.players.forEach((player) => {
+        this.scene.setProgress(player.side, player.progress);
+      });
+      this.scene.setMatch(this.props.match);
+    }
   }
 
   public render() {
-    const {} = this.props;
+    this.updateMapData();
 
     return (
       <Fragment>
