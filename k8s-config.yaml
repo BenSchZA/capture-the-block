@@ -32,6 +32,10 @@ spec:
               value: "0.0.0.0"
             - name: APP_PORT
               value: "3000"
+            - name: MAINNET_DAI_ADDRESS
+              value: "0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359"
+            - name: MAINNET_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS
+              value: "0x1c6b164beaa441b182ec366c461cd84c9137fe90"
             - name: RINKEBY_DAI_ADDRESS
               value: "0x4d87A619499b754CecB135671ED7Eb5F5071245A"
             - name: RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS
