@@ -34,6 +34,11 @@ const goerliDefaultConfigs = {
     chainId: 5 // Suitable for deploying on private networks like Quorum
 }
 
+const xdaiConfig = {
+    gasPrice: 20000000000,
+    gasLimit: 4700000,
+}
+
 const deploy = async (network, secret) => {
 	if(!secret){
 		secret = DEPLOYER_PRIVATE_KEY;
@@ -42,7 +47,6 @@ const deploy = async (network, secret) => {
 	
 	switch(network){
 		case "mainnet":{
-			console.log("asdasdas")
 			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, mainnetConfig);
 			let captureTheBlockInstance = await deployer.deploy(
 				CaptureTheBlockV1, 
@@ -50,8 +54,22 @@ const deploy = async (network, secret) => {
 				DAI_ADDRESS);
 				break;
 		}
+		case "xdai": {
+			deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, "https://dai.poa.network", xdaiConfig)
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
+				false, 
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
+			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+				break;
+		}
 		case "goerli": {
-			console.log(secret)
 			deployer = new etherlime.JSONRPCPrivateKeyDeployer(secret, "https://rpc.goerli.mudit.blog/", goerliDefaultConfigs)
 			let pseudoDaiInstance = await deployer.deploy(
 				PseudoDaiToken, 
@@ -66,6 +84,53 @@ const deploy = async (network, secret) => {
 				pseudoDaiInstance.contract.address);
 				break;
 		}
+		case "rinkeby":{
+			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, defaultConfigs);
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
+				false, 
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
+			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+			break;
+		}
+		case "kovan":{
+			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, defaultConfigs);
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
+				false, 
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
+			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+			break;
+		}
+		case "ropsten":{
+			deployer = new etherlime.InfuraPrivateKeyDeployer(secret, network, INFURA_API_KEY, defaultConfigs);
+			let pseudoDaiInstance = await deployer.deploy(
+				PseudoDaiToken, 
+				false, 
+				daiSettings.name, 
+				daiSettings.symbol, 
+				daiSettings.decimals
+			);
+			let captureTheBlockInstance = await deployer.deploy(
+				CaptureTheBlockV1, 
+				false,
+				pseudoDaiInstance.contract.address);
+			break;
+		}
+		
+
 		case "devnet": {
 			deployer = new etherlime.EtherlimeDevnetDeployer(secret, 8545, defaultConfigs)
 			let pseudoDaiInstance = await deployer.deploy(
