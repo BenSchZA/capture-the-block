@@ -14,10 +14,17 @@ const styles = ({ spacing, zIndex }: Theme) => createStyles({
     zIndex: zIndex.drawer + 1,
     background: '#01223b',
   },
-  appHeading: {
+  appHeadingLeft: {
     flexGrow: 1,
-    textAlign: 'center',
+    textAlign: 'left',
     color: 'white',
+    paddingLeft: spacing.unit*2,
+  },
+  appHeadingRight: {
+    flexGrow: 1,
+    textAlign: 'right',
+    color: 'white',
+    paddingRight: spacing.unit*2,
   },
   content: {
     flexGrow: 1,
@@ -40,8 +47,8 @@ class AppWrapper extends React.Component<Props> {
         <Fragment>
           <AppBar position="fixed" className={classes.appBar}>
             <Toolbar disableGutters={true}>
-              <Typography className={classes.appHeading}>Capture the Block</Typography>
-              <Typography className={classes.appHeading}>{ethAddress}</Typography>
+              <Typography className={classes.appHeadingLeft}>Capture the Block</Typography>
+              <Typography className={classes.appHeadingRight}>{ethAddress}</Typography>
             </Toolbar>
           </AppBar>
         </Fragment>
