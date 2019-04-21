@@ -92,7 +92,8 @@ export async function priceToBuy(index: number, side: number){
 		return parseFloat(ethers.utils.formatUnits(daiPriceBN, 18));
 	}
 	catch(e){
-		throw e;
+		console.error(e)
+		return 0;
 	}
 }
 
@@ -105,7 +106,8 @@ export async function rewardForSell(index: number, side: number){
 		return parseFloat(ethers.utils.formatUnits(daiPriceBN, 18));
 	}
 	catch(e){
-		throw e;
+		console.error(e)
+		return 0
 	}
 }
 
@@ -131,7 +133,8 @@ export async function getTotalSupply(index: number, side: number){
 		return parseFloat(ethers.utils.formatUnits(totalSupply, 0));
 	}
 	catch(e){
-		throw e;
+		console.error(e);
+		return 0;
 	}
 }
 
@@ -144,7 +147,8 @@ export async function getMatchSidePoolBalance(index: number, side: number){
 		return parseFloat(ethers.utils.formatUnits(daiPriceBN, 18));
 	}
 	catch(e){
-		throw e;
+		console.error(e);
+		return 0;
 	}
 }
 
@@ -157,7 +161,8 @@ export async function getBalanceOf(index: number, side: number){
 		return parseInt(ethers.utils.formatUnits(tokensBN, 0));
 	}
 	catch(e){
-		throw e;
+		console.error(e);
+		return 0;
 	}
 }
 
@@ -169,7 +174,8 @@ export async function matchIndex(){
 		return parseInt(ethers.utils.formatUnits(matchIndexBN, 0));
 	}
 	catch(e){
-		throw e;
+		console.error(e);
+		return 0;
 	}
 }
 
