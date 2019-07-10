@@ -84,6 +84,10 @@ export async function initBlockchainResources() {
       blockchainResources.daiAddress = `${process.env.MAINNET_DAI_ADDRESS}`;
       blockchainResources.captureTheBlockContractAddress = `${process.env.MAINNET_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
+    }else if(chainId == 3){
+      blockchainResources.daiAddress = `${process.env.ROPSTEN_DAI_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.ROPSTEN_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
+      blockchainResources.approvedNetwork = true;
     } else if(chainId == 4){
       blockchainResources.daiAddress = `${process.env.RINKEBY_DAI_ADDRESS}`;
       blockchainResources.captureTheBlockContractAddress = `${process.env.RINKEBY_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
@@ -91,6 +95,10 @@ export async function initBlockchainResources() {
     } else if(chainId == 5){
       blockchainResources.daiAddress = `${process.env.GOERLI_DAI_ADDRESS}`;
       blockchainResources.captureTheBlockContractAddress = `${process.env.GOERLI_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
+      blockchainResources.approvedNetwork = true;
+    } else if(chainId == 42){
+      blockchainResources.daiAddress = `${process.env.KOVAN_DAI_ADDRESS}`;
+      blockchainResources.captureTheBlockContractAddress = `${process.env.KOVAN_CAPTURE_THE_BLOCK_CONTRACT_ADDRESS}`;
       blockchainResources.approvedNetwork = true;
     } else {
       throw "Invalid network"

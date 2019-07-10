@@ -23,6 +23,7 @@ contract CaptureTheBlockV1 {
         uint256 prize;
         uint256 gradient;
         bool ended;
+        uint256 activePool;
     }
 
     event MatchStarted(uint256 indexed index, uint256 targetSupply);
@@ -57,6 +58,7 @@ contract CaptureTheBlockV1 {
         require(IERC20(collateralAddress_).transferFrom(msg.sender, address(this), daiValue), "Transfer failed");
         matches[matchIndex_].side[_side].poolBalance = matches[matchIndex_].side[_side].poolBalance.add(daiValue);
         matches[matchIndex_].prize = matches[matchIndex_].prize.add(daiValue);
+        matches[matchIndex_].activePool = matches[matchIndex_].activePool.add(daiValue);
         matches[matchIndex_].side[_side].balances[msg.sender] = matches[matchIndex_].side[_side].balances[msg.sender] + 1;
         matches[matchIndex_].side[_side].totalSupply = matches[matchIndex_].side[_side].totalSupply + 1;
         emit TokenPuchased(matchIndex_, msg.sender, daiValue);
@@ -71,6 +73,7 @@ contract CaptureTheBlockV1 {
     }
 
     function sellToken(uint8 _side) public returns(bool){
+        require(!matches[matchIndex_].ended, "Match ended");
         require(_side < matches[matchIndex_].numberOfSides, "Invalid Team");
         require(matches[matchIndex_].side[_side].balances[msg.sender] > 0, "User has no tokens remaining");
         uint256 daiValue = rewardForSell(matchIndex_, _side);
@@ -80,6 +83,7 @@ contract CaptureTheBlockV1 {
         matches[matchIndex_].side[_side].poolBalance = matches[matchIndex_].side[_side].poolBalance.sub(daiValue);
 
         matches[matchIndex_].prize = matches[matchIndex_].prize.sub(daiValue);
+        matches[matchIndex_].activePool = matches[matchIndex_].activePool.sub(daiValue);
         require(IERC20(collateralAddress_).transfer(msg.sender, daiValue), "Transfer failed");
         emit TokenSold(matchIndex_, msg.sender, daiValue);
         return true;
@@ -93,7 +97,9 @@ contract CaptureTheBlockV1 {
         matches[_index].side[matches[_index].winner].balances[msg.sender] = 0; 
 
         uint256 prize = matches[_index].prize.div(matches[_index].targetSupply).mul(portionOfPrize);
+        matches[matchIndex_].activePool = matches[matchIndex_].activePool.sub(prize);
         require(IERC20(collateralAddress_).transfer(msg.sender, prize), "Transfer failed");
+        matches[matchIndex_].activePool = matches[matchIndex_].activePool.sub(prize);
         emit WinningsClaimed(_index, msg.sender, portionOfPrize, prize);
     }
 
